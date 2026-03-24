@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CISI Chapter 2 — Practice Test</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1E2761;--navy-l:#CADCFC;--navy-d:#12195F;
+  --teal:#028090;--teal-l:#D6F0F3;--teal-d:#015E6A;--teal-m:#1D9E75;
+  --amber:#B07D12;--amber-l:#FEF3C7;--amber-d:#7C5A0A;
+  --coral:#993C1D;--coral-l:#FAECE7;--coral-m:#D85A30;
+  --purple:#534AB7;--purple-l:#EEEDFE;--purple-d:#3C3489;
+  --green-l:#E1F5EE;--green:#085041;
+  --gray:#64748B;--gray-l:#F1F5F9;--gray-m:#CBD5E1;--gray-d:#334155;
+  --bg:#F0F4F8;--card:#fff;--text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --radius:12px;--shadow:0 2px 10px rgba(0,0,0,.09);
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app-header{background:linear-gradient(135deg,var(--navy),var(--teal));padding:1.2rem 1.5rem .85rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.app-title{color:#fff;font-size:1.08rem;font-weight:700;line-height:1.3}
+.app-sub{color:var(--navy-l);font-size:.72rem;margin-top:.18rem}
+.reset-btn{background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.38);color:#fff;border-radius:7px;padding:.36rem .95rem;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.reset-btn:hover{background:rgba(255,255,255,.3)}
+.screen{padding:1.4rem;max-width:820px;margin:0 auto}
+.round-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--navy);color:var(--navy-l);border-radius:7px;padding:.3rem .85rem;font-size:.73rem;font-weight:600;margin-bottom:1rem}
+.tracker{display:flex;gap:3px;margin-bottom:1.05rem}
+.tracker-dot{flex:1;height:10px;border-radius:5px;background:var(--gray-m);transition:background .3s}
+.tracker-dot.t-ok{background:var(--teal-m)}
+.tracker-dot.t-bad{background:var(--coral-m)}
+.tracker-dot.t-cur{background:var(--navy-l)}
+.score-bar{display:flex;gap:.65rem;margin-bottom:1rem}
+.sc{flex:1;background:var(--card);border-radius:10px;padding:.58rem .75rem;text-align:center;border:1px solid var(--gray-m);box-shadow:var(--shadow)}
+.sc .n{font-size:1.38rem;font-weight:700;color:var(--teal);line-height:1}
+.sc .n-ok{color:var(--teal-m)}
+.sc .n-bad{color:var(--coral-m)}
+.sc .l{font-size:.67rem;color:var(--text3);margin-top:.18rem}
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.4rem 1.5rem;margin-bottom:1rem;border:1px solid rgba(0,0,0,.05)}
+.q-meta{display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem;flex-wrap:wrap}
+.q-num{font-size:.68rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.07em}
+.q-tag{font-size:.64rem;font-weight:700;padding:.15rem .48rem;border-radius:20px}
+.tag-cisi{background:#FEF3C7;color:#7C5A0A}
+.tag-concept{background:var(--purple-l);color:var(--purple-d)}
+.tag-scenario{background:var(--teal-l);color:var(--teal-d)}
+.tag-detail{background:var(--gray-l);color:var(--gray-d)}
+.q-topic{font-size:.64rem;color:var(--text3);margin-left:auto}
+.q-text{font-size:.93rem;font-weight:500;line-height:1.6;margin-bottom:.95rem;color:var(--text)}
+.opts{display:flex;flex-direction:column;gap:.42rem}
+.opt{display:flex;align-items:flex-start;gap:.65rem;padding:.68rem .95rem;border-radius:8px;border:1.5px solid var(--gray-m);cursor:pointer;font-size:.86rem;line-height:1.46;background:var(--card);transition:all .16s}
+.opt:hover:not(.dis){border-color:var(--teal);background:var(--teal-l)}
+.opt.ok{border-color:var(--teal-m);background:var(--green-l);color:var(--green)}
+.opt.bad{border-color:var(--coral-m);background:var(--coral-l);color:var(--coral)}
+.opt.dis{cursor:default}
+.opt-l{width:21px;height:21px;min-width:21px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:.69rem;font-weight:700;color:var(--gray);margin-top:1px;flex-shrink:0}
+.opt.ok .opt-l{background:var(--teal-m);color:#fff}
+.opt.bad .opt-l{background:var(--coral-m);color:#fff}
+.exp-box{margin-top:.8rem;padding:.7rem 1rem;border-radius:8px;font-size:.81rem;line-height:1.62;display:none}
+.exp-box.show{display:block}
+.exp-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.exp-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.result-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem 1.5rem;text-align:center;margin-top:.5rem}
+.result-big{font-size:3.2rem;font-weight:800;margin:.4rem 0}
+.result-grade{display:inline-block;padding:.38rem 1.2rem;border-radius:20px;font-size:.92rem;font-weight:700;margin:.5rem 0 .8rem}
+.result-bar-wrap{background:var(--gray-l);border-radius:20px;height:14px;overflow:hidden;margin:.75rem auto;max-width:320px}
+.result-bar-fill{height:100%;border-radius:20px;transition:width .8s ease}
+.result-breakdown{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 1.2rem}
+.rp{padding:.3rem .9rem;border-radius:20px;font-size:.8rem;font-weight:600}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin:.5rem 0 1.2rem;text-align:left}
+.topic-row{background:var(--gray-l);border-radius:8px;padding:.5rem .75rem;font-size:.78rem}
+.topic-name{color:var(--text2);font-weight:600;margin-bottom:.2rem}
+.topic-bar-wrap{background:var(--gray-m);border-radius:10px;height:6px;overflow:hidden}
+.topic-bar-fill{height:100%;border-radius:10px}
+.q-review-list{text-align:left;margin-top:.5rem}
+.q-review-item{padding:.65rem 1rem;border-radius:8px;margin-bottom:.45rem;font-size:.83rem;line-height:1.52;display:flex;gap:.65rem;align-items:flex-start}
+.q-review-item.r-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.q-review-item.r-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.r-icon{font-size:.9rem;flex-shrink:0;margin-top:.08rem}
+.btn{padding:.58rem 1.3rem;border:none;border-radius:8px;cursor:pointer;font-size:.86rem;font-weight:600;transition:all .2s}
+.btn-p{background:var(--teal);color:#fff}.btn-p:hover{background:var(--teal-d)}
+.btn-row{display:flex;gap:.65rem;flex-wrap:wrap;justify-content:center}
+</style>
+</head>
+<body>
+<div class="app-header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">CISI — Chapter 2: Principles for Business</div>
+      <div class="app-sub">Sections 2.1 · 2.2 · 2.3 · 2.4 &nbsp;|&nbsp; 10 questions per round &nbsp;|&nbsp; Bank: 54 questions</div>
+    </div>
+    <button class="reset-btn" onclick="doReset()">&#8635; New round</button>
+  </div>
+</div>
+
+<div class="screen">
+  <div class="round-pill" id="round-label">Round 1 &middot; 10 questions from bank of 55</div>
+  <div class="tracker" id="tracker"></div>
+  <div class="score-bar">
+    <div class="sc"><div class="n" id="s-num">0/10</div><div class="l">Progress</div></div>
+    <div class="sc"><div class="n n-ok" id="s-ok">0</div><div class="l">Correct</div></div>
+    <div class="sc"><div class="n n-bad" id="s-bad">0</div><div class="l">Wrong</div></div>
+    <div class="sc"><div class="n" id="s-pct">&mdash;</div><div class="l">Score</div></div>
+  </div>
+  <div id="q-area"></div>
+</div>
+
+<script>
+const BANK=[
+// ── 2.1 FCA PRINCIPLES FOR BUSINESSES ─────────────────────────────────────
+{tag:"cisi",topic:"2.1 PRIN",
+q:"How many Principles for Businesses does the FCA have, and what is their legal status?",
+opts:["8 Principles; they are guidance only","12 Principles; they are legally binding on all authorised firms","10 Principles; they apply only to retail-facing firms","12 Principles; they are voluntary standards"],
+ans:1,exp:"There are 12 Principles for Businesses. They are legally binding on all authorised firms — a breach renders the firm liable to disciplinary sanctions."},
+
+{tag:"cisi",topic:"2.1 PRIN",
+q:"Under the FCA's Principles for Businesses, Principle 1 requires a firm to:",
+opts:["Maintain adequate financial resources","Conduct its business with integrity","Pay due regard to the interests of its customers","Observe proper standards of market conduct"],
+ans:1,exp:"Principle 1 is Integrity: a firm must conduct its business with integrity. This is the foundational conduct standard."},
+
+{tag:"cisi",topic:"2.1 PRIN",
+q:"Which FCA Principle requires a firm to 'pay due regard to the information needs of its clients and communicate information to them in a way which is clear, fair and not misleading'?",
+opts:["Principle 6 — Customers' interests","Principle 7 — Communications with clients","Principle 9 — Customers: relationships of trust","Principle 8 — Conflicts of interest"],
+ans:1,exp:"Principle 7 — Communications with clients. This is frequently tested and closely linked to Principle 6 (Customers' interests). Both are replaced by Principle 12 for firms in scope of Consumer Duty."},
+
+{tag:"cisi",topic:"2.1 PRIN",
+q:"Which Principle requires a firm to 'take reasonable care to organise and control its affairs responsibly and effectively with adequate risk management systems'?",
+opts:["Principle 4 — Financial prudence","Principle 2 — Skill, care and diligence","Principle 3 — Management and control","Principle 5 — Market conduct"],
+ans:2,exp:"Principle 3 — Management and control. The key phrase is 'adequate risk management systems' combined with organising affairs responsibly and effectively."},
+
+{tag:"cisi",topic:"2.1 PRIN",
+q:"Principle 11 — Relations with regulators — requires a firm to:",
+opts:["Report all client complaints to the FCA within 24 hours","Deal with its regulators in an open and cooperative way and disclose anything they would reasonably expect notice of","Ensure all senior managers hold FCA-approved qualifications","Submit quarterly reports on market conduct to the PRA/FCA"],
+ans:1,exp:"Principle 11 requires open and cooperative dealing with regulators and proactive disclosure of anything relating to the firm of which the PRA/FCA would reasonably expect notice."},
+
+{tag:"cisi",topic:"2.1 PRIN",
+q:"Principle 12 — Consumer Duty — requires firms to:",
+opts:["Treat all clients as retail customers regardless of classification","Act to deliver good outcomes for retail customers and provide evidence those outcomes are being met","Apply Consumer Duty standards to all professional clients as well","Eliminate all foreseeable harm to customers at any cost"],
+ans:1,exp:"Principle 12 requires firms to act to deliver good outcomes for retail customers and to understand and provide evidence whether those outcomes are being met. Firms must also consider customers' characteristics and objectives."},
+
+{tag:"cisi",topic:"2.1 PRIN",
+q:"When Principle 12 (Consumer Duty) applies to a firm, what happens to Principles 6 and 7?",
+opts:["They remain in force alongside Principle 12","They are suspended pending FCA review","They no longer apply to firms in respect of the services and products they provide to retail customers","They are replaced by FCA guidance only, not binding rules"],
+ans:2,exp:"When Principle 12 applies, Principles 6 (Customers' interests) and 7 (Communications with clients) no longer apply in respect of services and products provided to retail customers."},
+
+{tag:"concept",topic:"2.1 PRIN",
+q:"Which Principle covers a firm's obligation to 'arrange adequate protection for clients' assets when it is responsible for them'?",
+opts:["Principle 8 — Conflicts of interest","Principle 9 — Customers: relationships of trust","Principle 10 — Clients' assets","Principle 11 — Relations with regulators"],
+ans:2,exp:"Principle 10 — Clients' assets. This covers the safeguarding obligation when a firm holds or is responsible for client money or assets."},
+
+{tag:"scenario",topic:"2.1 PRIN",
+q:"An investment firm has been advising clients without adequately assessing whether its recommendations match each client's needs. Which Principle is most directly breached?",
+opts:["Principle 5 — Market conduct","Principle 9 — Customers: relationships of trust","Principle 11 — Relations with regulators","Principle 4 — Financial prudence"],
+ans:1,exp:"Principle 9 — Customers: relationships of trust. This Principle requires a firm to take reasonable care to ensure the suitability of its advice and discretionary decisions for customers who rely on its judgment."},
+
+{tag:"detail",topic:"2.1 PRIN",
+q:"Which Principle requires a firm to 'manage conflicts of interest fairly, both between itself and its customers and between customers and other clients'?",
+opts:["Principle 6","Principle 7","Principle 8","Principle 9"],
+ans:2,exp:"Principle 8 — Conflicts of interest. This covers the obligation to manage conflicts fairly both between the firm and its customers, and between different customers or clients."},
+
+{tag:"scenario",topic:"2.1 PRIN",
+q:"A firm discovers a significant issue affecting client accounts but decides not to inform the FCA, fearing reputational damage. Which Principle does this most directly breach?",
+opts:["Principle 1 — Integrity","Principle 3 — Management and control","Principle 11 — Relations with regulators","Principle 6 — Customers' interests"],
+ans:2,exp:"Principle 11 — Relations with regulators. Firms must deal with regulators in an open and cooperative way and disclose anything the PRA/FCA would reasonably expect notice of."},
+
+{tag:"detail",topic:"2.1 PRIN",
+q:"Principle 5 — Market conduct — requires a firm to:",
+opts:["Maintain adequate financial resources at all times","Conduct business with due skill, care and diligence","Observe proper standards of market conduct","Communicate clearly with clients"],
+ans:2,exp:"Principle 5 — Market conduct: a firm must observe proper standards of market conduct. This covers behaviour in markets including trading practices and market integrity."},
+
+// ── 2.2 CONSUMER DUTY ─────────────────────────────────────────────────────
+{tag:"cisi",topic:"2.2 Consumer Duty",
+q:"The Consumer Duty initiative comprises which of the following elements?",
+opts:["A Principle only","Rules and guidance only","A Principle (Principle 12), rules, expected outcomes and formal guidance","Principle 12 and voluntary industry standards"],
+ans:2,exp:"Consumer Duty comprises: Principle 12 + rules + expected outcomes + formal guidance. All four elements work together to set the standard."},
+
+{tag:"cisi",topic:"2.2 Consumer Duty",
+q:"When did Consumer Duty rules come into effect for new and existing products or services?",
+opts:["January 2022","July 2023","January 2023","31 July 2024"],
+ans:1,exp:"Consumer Duty rules came into effect in 2023 for new and existing products or services. The 31 July 2024 date applies specifically to closed products and services."},
+
+{tag:"cisi",topic:"2.2 Consumer Duty",
+q:"When did Consumer Duty rules come into effect for 'closed' products and services?",
+opts:["1 January 2023","1 July 2023","31 July 2024","31 December 2024"],
+ans:2,exp:"Consumer Duty rules came into effect on 31 July 2024 for closed products and services — products only available to existing customers with no ability to make new investments, or products being wound down."},
+
+{tag:"cisi",topic:"2.2 Consumer Duty",
+q:"Which of the following is NOT in scope of the Consumer Duty?",
+opts:["Regulated mortgages (MCOB)","Deposit-taking activities (BCOBS)","Reinsurance","Insurance products (ICOBS)"],
+ans:2,exp:"Reinsurance is explicitly excluded from the Consumer Duty scope. Insurance (ICOBS) is in scope, but not reinsurance."},
+
+{tag:"cisi",topic:"2.2 Consumer Duty",
+q:"The Consumer Duty applies to investments (COBS). Which of the following statements about professional clients is correct?",
+opts:["The Duty applies fully to all professional clients","The Duty does not apply to customers who elect to be treated as professional clients, but does apply to the process used to determine that status","The Duty never applies to any investment business","The Duty applies only to professional clients, not retail clients"],
+ans:1,exp:"The Duty does not apply to customers who elect to be treated as professional clients — but it does apply to the process a firm uses to determine a client's status."},
+
+{tag:"cisi",topic:"2.2 Consumer Duty",
+q:"The Consumer Duty applies to wholesale firms in certain circumstances. When does it apply?",
+opts:["Never — it applies to retail firms only","Always — all wholesale firms must comply fully","Where wholesale firms have the potential to impact retail customers when involved in a distribution chain","Only when the wholesale firm directly communicates with retail customers"],
+ans:2,exp:"Consumer Duty applies to wholesale firms where they have the potential to impact retail customers when involved in a distribution chain and their actions could determine or materially influence retail customer outcomes — applied on a proportionate basis."},
+
+{tag:"detail",topic:"2.2 Consumer Duty",
+q:"Which of the following wholesale activities is EXCLUDED from the Consumer Duty?",
+opts:["Preparing communications to be issued to retail customers","Engaging in customer support for retail customers","Activities relating to non-retail financial instruments with a minimum denomination of £50,000","Distributing retail products or services"],
+ans:2,exp:"Activities relating to non-retail financial instruments with a minimum denomination/investment of £50,000 are excluded from the Consumer Duty. The other three options are examples of wholesale activities that are IN scope."},
+
+{tag:"cisi",topic:"2.2 Cross-Cutting Rules",
+q:"Which of the following correctly lists the three FCA cross-cutting rules under Consumer Duty?",
+opts:["Know your customer; suitability; fair value","Act in good faith; avoid foreseeable harm; enable and support customers to pursue their financial objectives","Be transparent; manage conflicts; deliver outcomes","Integrity; prudence; fair communication"],
+ans:1,exp:"The three cross-cutting rules are: (1) Act in good faith towards retail customers; (2) Avoid foreseeable harm to retail customers; (3) Enable and support retail customers to pursue their financial objectives."},
+
+{tag:"cisi",topic:"2.2 Cross-Cutting Rules",
+q:"Under the cross-cutting rule 'avoid foreseeable harm', which of the following is correct?",
+opts:["Firms must protect customers from all possible harm at any cost","Firms must ensure retail customers understand and accept the inherent risk in products; firms do not have a responsibility to protect customers from all foreseeable harm","Firms must refuse to sell any product that carries investment risk","Firms must guarantee positive outcomes for all retail customers"],
+ans:1,exp:"Firms must ensure retail customers understand and accept the inherent risk in products. However, firms do NOT have a responsibility to protect customers from all foreseeable harm. They must be clear and transparent."},
+
+{tag:"concept",topic:"2.2 Cross-Cutting Rules",
+q:"The cross-cutting rule 'act in good faith' is characterised by which standard of conduct?",
+opts:["Following all FCA rules and guidance to the letter","Honesty, fair and open dealings, and acting consistently with the reasonable expectations of retail customers","Ensuring all products deliver positive financial returns","Avoiding all conflicts of interest in product design"],
+ans:1,exp:"'Act in good faith' is a standard of conduct characterised by honesty, fair and open dealings, and acting consistently with the reasonable expectations of retail customers. Firms should consider this rule at the product or service design stage."},
+
+{tag:"cisi",topic:"2.2 Four Outcomes",
+q:"Which of the following correctly lists the four 'good outcomes' the FCA expects under Consumer Duty?",
+opts:["Fair price; informed consent; complaint handling; product suitability","Products and services; price and value; consumer understanding; consumer support","Transparency; integrity; prudence; accountability","Consumer protection; competition; market integrity; sustainability"],
+ans:1,exp:"The four Consumer Duty outcomes are: (1) Products and Services Outcome; (2) Price and Value Outcome; (3) Consumer Understanding Outcome; (4) Consumer Support Outcome."},
+
+{tag:"cisi",topic:"2.2 Four Outcomes",
+q:"Regarding the Price and Value Outcome under Consumer Duty, which statement is correct?",
+opts:["The FCA sets maximum prices for all retail financial products","Fair value means all retail consumers will achieve the same outcomes","The FCA does not regulate pricing but expects firms to offer products and services that represent fair value","Firms must always charge new and existing customers identical prices"],
+ans:2,exp:"The FCA does not regulate pricing but expects fair value. Fair value does NOT mean identical outcomes for all consumers. Firms may charge different prices for new/existing customers but must demonstrate discounts are clearly communicated to both groups."},
+
+{tag:"cisi",topic:"2.2 Four Outcomes",
+q:"Under the Products and Services Outcome, what are product distributors responsible for?",
+opts:["Setting the price and features of all distributed products","Distributing/marketing a product reflecting its identified target market audience, and taking reasonable steps to prevent distribution outside that target market","Carrying out all regulatory reviews of product performance","Designing products to meet the specific needs of each individual customer"],
+ans:1,exp:"Product distributors are responsible for distributing/marketing a product in a way that reflects its identified target market audience, and for taking all reasonable steps to prevent a product being offered to customers outside the intended target market."},
+
+{tag:"concept",topic:"2.2 Four Outcomes",
+q:"Under the Consumer Understanding Outcome, what does the FCA expect firms to provide?",
+opts:["A mandatory key facts document for every product sold","Information at the right time, in a clear and easily understood way, enabling customers to understand features, costs/risks/benefits, and whether the product meets their financial needs","A standardised risk rating on all products using a 1-5 scale","Annual statements summarising all product performance to customers"],
+ans:1,exp:"The FCA expects firms to provide information at the right time and in a way that is clear and easily understood, enabling customers to understand: the features of products/services; likely costs, risks and benefits; and whether products will meet their financial needs and objectives."},
+
+{tag:"scenario",topic:"2.2 Four Outcomes",
+q:"A customer calls her bank's helpline but is kept on hold for 45 minutes and then disconnected. When she tries the online portal, it is unavailable. Which Consumer Duty outcome is most directly at risk?",
+opts:["Products and Services Outcome","Price and Value Outcome","Consumer Understanding Outcome","Consumer Support Outcome"],
+ans:3,exp:"Consumer Support Outcome. Firms are expected to provide an appropriate level of service that meets customers' needs throughout their relationship. Poor accessibility to support services directly breaches this outcome."},
+
+{tag:"scenario",topic:"2.2 Four Outcomes",
+q:"A firm designs an investment product with high fees that significantly exceed the returns delivered to customers. Which Consumer Duty outcome is most directly affected?",
+opts:["Consumer Understanding Outcome","Products and Services Outcome","Price and Value Outcome","Consumer Support Outcome"],
+ans:2,exp:"Price and Value Outcome. Value requires a relationship between the price paid and the benefit received. High fees that exceed returns means the product fails to deliver fair value."},
+
+{tag:"cisi",topic:"2.2.2 Accountability",
+q:"As part of Consumer Duty, the FCA introduced a new Conduct Rule under SM&CR. What does it state?",
+opts:["'You must ensure all customers receive identical outcomes'","'You must act to deliver good outcomes for retail customers'","'You must report all customer complaints to the FCA within 7 days'","'You must prioritise professional clients over retail clients'"],
+ans:1,exp:"The new SM&CR Conduct Rule states: 'You must act to deliver good outcomes for retail customers.' This applies to firms in scope of Consumer Duty."},
+
+{tag:"cisi",topic:"2.2.2 Accountability",
+q:"Who does the FCA hold accountable for the implementation and ongoing compliance with Consumer Duty obligations?",
+opts:["The FCA's own supervisory team","All front-line customer-facing staff","Senior managers, ensuring it is embedded within the firm via the SM&CR","The firm's external auditors"],
+ans:2,exp:"The FCA holds senior managers accountable for the implementation and ongoing compliance with Consumer Duty obligations, ensuring it is embedded within the firm via the SM&CR."},
+
+{tag:"concept",topic:"2.2.2 Accountability",
+q:"The FCA has identified in the COCON rules three requirements for firms and their individuals under Consumer Duty. Which answer correctly states all three?",
+opts:["Know your customer; conduct suitability assessments; document advice","Act in good faith; avoid foreseeable harm; enable and support retail customers to pursue their financial objectives","Maintain adequate capital; manage liquidity; report breaches","Disclose conflicts; obtain consent; keep records"],
+ans:1,exp:"COCON rules identify three requirements: (1) acting in good faith — honesty, fair and open dealing; (2) avoiding foreseeable harm to retail customers; (3) enabling and supporting retail customers to pursue their financial objectives."},
+
+{tag:"scenario",topic:"2.2 Consumer Duty",
+q:"An investment firm classifies a product as 'wholesale only' to avoid Consumer Duty obligations, then distributes it to retail customers through a distribution chain. What does the FCA's position say about this?",
+opts:["This is permitted as long as the product was originally approved for wholesale use","Attempts by firms to incorrectly classify a product as non-retail to avoid Consumer Duty are unacceptable","The firm is exempt as long as it does not directly communicate with retail customers","This is allowed provided the distributor at the end of the chain is Consumer Duty compliant"],
+ans:1,exp:"Attempts by firms to incorrectly classify a product or service as non-retail with the aim of avoiding Consumer Duty, and then distributing the product to retail customers, are unacceptable under FCA rules."},
+
+{tag:"detail",topic:"2.2 Consumer Duty",
+q:"Under the Consumer Duty, to whom does it apply besides existing customers?",
+opts:["Only existing customers who have made complaints","Professional clients who opt into retail treatment","Prospective customers","Customers who have been with the firm for less than 12 months only"],
+ans:2,exp:"The Consumer Duty applies not only to existing customers but also to prospective customers."},
+
+// ── 2.3 FTOC ──────────────────────────────────────────────────────────────
+{tag:"cisi",topic:"2.3 FTOC",
+q:"To which firms does the Fair Treatment of Customers (FTOC) framework apply?",
+opts:["All FCA-regulated firms, including those in scope of Consumer Duty","Only firms regulated by the PRA","Firms out of scope of the Consumer Duty requirements","Only firms operating in wholesale markets"],
+ans:2,exp:"FTOC applies to firms out of scope of the Consumer Duty — either because they do not deal directly with retail customers, cannot materially impact good outcomes for retail customers, or because their products/services fall into a CD exemption."},
+
+{tag:"cisi",topic:"2.3 FTOC",
+q:"What is the 'client's best interests rule'?",
+opts:["A rule requiring firms to place all client assets in the safest possible investments","The rule that 'a firm must act honestly, fairly and professionally in accordance with the best interests of its client'","A rule requiring firms to disclose all conflicts of interest to clients","A rule mandating independent suitability assessments for all advice"],
+ans:1,exp:"The client's best interests rule states: 'A firm must act honestly, fairly and professionally in accordance with the best interests of its client.' It is expressed in Principle 6 and as an important conduct of business rule."},
+
+{tag:"cisi",topic:"2.3 FTOC",
+q:"Which FCA Principle expresses the concept of fair treatment of clients?",
+opts:["Principle 3 — Management and control","Principle 5 — Market conduct","Principle 6 — Customers' interests","Principle 9 — Customers: relationships of trust"],
+ans:2,exp:"The concept of fair treatment is expressed primarily in Principle 6 — Customers' interests — and also in the client's best interests rule as a conduct of business rule."},
+
+{tag:"cisi",topic:"2.3 FTOC",
+q:"How many outcomes does the FTOC initiative define?",
+opts:["4","5","6","8"],
+ans:2,exp:"The FTOC initiative defines six outcomes. These cover corporate culture, product design, information, advice, product performance, and post-sale treatment."},
+
+{tag:"cisi",topic:"2.3 FTOC",
+q:"Which of the following is FTOC Outcome 6?",
+opts:["Consumers receive suitable advice that takes account of their circumstances","Products perform as firms have led consumers to expect","Consumers do not face unreasonable post-sale barriers to change product, switch provider, submit a claim or make a complaint","Consumers are provided with clear information before, during and after the point of sale"],
+ans:2,exp:"FTOC Outcome 6: Consumers do not face unreasonable post-sale barriers imposed by firms to change product, switch provider, submit a claim or make a complaint."},
+
+{tag:"cisi",topic:"2.3 FTOC",
+q:"FTOC Outcome 1 states that:",
+opts:["Products are designed to meet the needs of identified consumer groups","Consumers are provided with clear information before, during and after the sale","Consumers can be confident that they are dealing with firms where the fair treatment of customers is central to the corporate culture","Consumers are not sold unsuitable products"],
+ans:2,exp:"FTOC Outcome 1: Consumers can be confident that they are dealing with firms where the fair treatment of customers is central to the corporate culture. This is the culture/governance outcome."},
+
+{tag:"concept",topic:"2.3 FTOC",
+q:"What does the FTOC initiative specifically aim to do?",
+opts:["Regulate the prices charged for financial products","Help customers fully understand features, benefits, risks and costs of products; and minimise sale of unsuitable products through best practice before, during and after a sale","Set mandatory product standards for all retail financial instruments","Replace all existing FCA conduct rules for retail business"],
+ans:1,exp:"FTOC specifically: (1) helps customers fully understand the features, benefits, risks and costs of the financial products they buy; and (2) minimises the sale of unsuitable products by encouraging best practice before, during and after a sale."},
+
+{tag:"scenario",topic:"2.3 FTOC",
+q:"A customer receives advice to invest in a product that turns out to be entirely unsuitable for her circumstances, despite the firm's analysis suggesting otherwise. She is now locked in with no exit route. Which two FTOC outcomes are most directly breached?",
+opts:["Outcomes 1 and 2","Outcomes 4 and 6","Outcomes 3 and 5","Outcomes 2 and 6"],
+ans:1,exp:"Outcome 4 (suitable advice — the advice should have taken account of her circumstances) and Outcome 6 (no unreasonable post-sale barriers — she has no exit route). Both are directly breached."},
+
+{tag:"detail",topic:"2.3 FTOC",
+q:"Under FTOC, what is an important part of the FCA's supervision of firms?",
+opts:["Ensuring firms achieve minimum profitability targets","Assessing how firms are able to demonstrate fair treatment of clients; management culture should have the client's best interests at the heart of the firm","Verifying that firms hold at least 10% capital above minimum requirements","Conducting annual mystery shopping exercises for all authorised firms"],
+ans:1,exp:"An important part of FCA supervision under FTOC involves assessing how firms demonstrate fair treatment of clients. The firm's management culture should have the client's best interests at the heart of the firm, and firms must gather sufficient management information to monitor compliance and identify failures."},
+
+// ── 2.4 PRA FUNDAMENTAL RULES ─────────────────────────────────────────────
+{tag:"cisi",topic:"2.4 PRA Fundamental Rules",
+q:"How many PRA Fundamental Rules are there?",
+opts:["6","7","8","10"],
+ans:2,exp:"There are 8 PRA Fundamental Rules. They set out the PRA's high-level expectations relating to the safety and soundness of regulated firms."},
+
+{tag:"cisi",topic:"2.4 PRA Fundamental Rules",
+q:"How do the PRA Fundamental Rules relate to the FCA's Principles for Businesses?",
+opts:["They are identical in all respects","The majority of the PRA Fundamental Rules are similar to the FCA's Principles for Businesses","They are entirely different with no overlap","The PRA Fundamental Rules replace the FCA Principles for dual-regulated firms"],
+ans:1,exp:"The majority of the PRA's Fundamental Rules are similar to the FCA's Principles for Businesses. They represent a clearer expression of the PRA's expectations and more closely reflect the PRA's underlying detailed rules."},
+
+{tag:"cisi",topic:"2.4 PRA Fundamental Rules",
+q:"PRA Fundamental Rule 8 requires firms to:",
+opts:["Maintain adequate financial resources at all times","Have effective risk strategies and risk management systems","Prepare for resolution so, if the need arises, it can be resolved in an orderly manner with a minimum disruption to critical services","Conduct business with due skill, care and diligence"],
+ans:2,exp:"PRA Fundamental Rule 8 requires firms to prepare for resolution — so that if the need arises, it can be resolved in an orderly manner with minimum disruption to critical services. This is unique to PRA rules (no direct FCA equivalent)."},
+
+{tag:"cisi",topic:"2.4 PRA Fundamental Rules",
+q:"How are the PRA Fundamental Rules applied across different firms?",
+opts:["Identically to all PRA-regulated firms regardless of size or sector","Proportionately to all PRA firms, taking into account the difference between sectors and between sizes of firms","Only to the largest systemically important banks","Only to insurance companies, not to banks"],
+ans:1,exp:"The Fundamental Rules apply proportionately to all PRA firms, taking into account the difference between sectors and between sizes of firms. They apply with respect to a firm's activities wherever they are carried on."},
+
+{tag:"concept",topic:"2.4 PRA Fundamental Rules",
+q:"Which PRA Fundamental Rule has no direct equivalent in the FCA's Principles for Businesses?",
+opts:["Act in a prudent manner","Conduct business with integrity","Prepare for resolution so it can be resolved in an orderly manner with minimum disruption to critical services","Organise and control its affairs responsibly and effectively"],
+ans:2,exp:"PRA Fundamental Rule 8 — prepare for resolution — has no direct equivalent in the FCA's Principles for Businesses. It is a prudential-specific requirement reflecting the PRA's focus on firm safety and orderly failure management."},
+
+{tag:"detail",topic:"2.4 PRA Fundamental Rules",
+q:"PRA Fundamental Rule 3 requires firms to:",
+opts:["Maintain adequate financial resources at all times","Have effective risk management systems","Act in a prudent manner","Deal openly and cooperatively with regulators"],
+ans:2,exp:"PRA Fundamental Rule 3 is 'act in a prudent manner'. This reflects the PRA's prudential focus — comparing to the FCA, which has no direct equivalent Principle using the word 'prudent'."},
+
+{tag:"scenario",topic:"2.4 PRA Fundamental Rules",
+q:"A bank's senior management has been investing in highly speculative assets without maintaining adequate capital buffers. Which PRA Fundamental Rules are most directly relevant?",
+opts:["Rules 1 and 2","Rules 3 and 4","Rules 6 and 7","Rules 7 and 8"],
+ans:1,exp:"Rule 3 (act in a prudent manner) — speculative investment without adequate capital is imprudent. Rule 4 (maintain adequate financial resources at all times) — capital buffers are financial resources. Both are directly relevant."},
+
+{tag:"concept",topic:"2.4 PRA Fundamental Rules",
+q:"What is the purpose of the PRA Fundamental Rules?",
+opts:["To set detailed prescriptive rules for every aspect of banking operations","To set the PRA's high-level expectations relating to the safety and soundness of regulated firms; they are a clearer expression of the PRA's expectations and more closely reflect its underlying detailed rules","To replace all FCA conduct requirements for dual-regulated firms","To provide non-binding guidance on best practice for PRA-regulated firms"],
+ans:1,exp:"The Fundamental Rules set out the PRA's high-level expectations relating to the safety and soundness of regulated firms. They are a clearer expression of the PRA's expectations and more closely reflect the PRA's underlying detailed rules."},
+{tag:"cisi",topic:"2.2 Consumer Duty",
+q:"Where the Consumer Duty applies to wholesale firms, on what basis is it applied?",
+opts:["On a full and equal basis regardless of the firm's position in the chain","On a proportionate basis based on the firm's influence over retail customer outcomes — a firm remote from retail customers with no direct client relationship will have limited obligations","Only if the wholesale firm has more than 500 retail customers in the distribution chain","Only if the wholesale firm directly manufactures the retail product"],
+ans:1,exp:"Where Consumer Duty applies to wholesale firms, it is applied on a proportionate basis based on the firm's influence over retail customer outcomes. A firm that is remote from retail customers, with no direct client relationship, will have limited obligations."},
+
+{tag:"cisi",topic:"2.3 FTOC",
+q:"FTOC Outcome 2 states that:",
+opts:["Consumers are provided with clear information before, during and after the point of sale","Products and services marketed and sold in the retail market are designed to meet the needs of identified consumer groups and are targeted accordingly","Consumers can be confident that fair treatment is central to the firm's corporate culture","Where consumers receive advice, the advice is suitable and takes account of their circumstances"],
+ans:1,exp:"FTOC Outcome 2: Products and services marketed and sold in the retail market are designed to meet the needs of identified consumer groups and are targeted accordingly. This is the product design outcome."},
+
+{tag:"cisi",topic:"2.3 FTOC",
+q:"FTOC Outcome 3 states that:",
+opts:["Consumers are provided with products that perform as firms have led them to expect","Where consumers receive advice, it is suitable and takes account of their circumstances","Consumers are provided with clear information and are kept appropriately informed before, during and after the point of sale","Consumers do not face unreasonable post-sale barriers"],
+ans:2,exp:"FTOC Outcome 3: Consumers are provided with clear information and are kept appropriately informed before, during and after the point of sale. This is the information/disclosure outcome."},
+
+{tag:"cisi",topic:"2.3 FTOC",
+q:"FTOC Outcome 5 states that:",
+opts:["Consumers do not face unreasonable post-sale barriers imposed by firms","Consumers are provided with products that perform as firms have led them to expect, and the associated service is of an acceptable standard as they have been led to expect","Consumers can be confident that fair treatment is central to the corporate culture","Products and services are designed to meet the needs of identified consumer groups"],
+ans:1,exp:"FTOC Outcome 5: Consumers are provided with products that perform as firms have led them to expect, and the associated service is of an acceptable standard and as they have been led to expect. This is the product performance outcome."},
+];
+
+const SK='cisi_ch2_v1';
+const N=10;
+let APP={round:[],answers:{},opts:{},seen:[],roundNum:0};
+
+function save(){try{localStorage.setItem(SK,JSON.stringify(APP));}catch(e){}}
+function load(){
+  try{
+    const d=localStorage.getItem(SK);
+    if(d){
+      const p=JSON.parse(d);
+      if(p&&Array.isArray(p.round)&&p.round.length===N&&typeof p.roundNum==='number'&&Array.isArray(p.seen)){
+        APP=p;
+      }
+    }
+  }catch(e){}
+}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function buildRound(){
+  const lastWrong=Object.entries(APP.answers)
+    .filter(([,v])=>v&&v.v===0)
+    .map(([k])=>APP.round[parseInt(k)])
+    .filter(x=>x!==undefined);
+  const unseen=BANK.map((_,i)=>i).filter(i=>!APP.seen.includes(i));
+  const seenOld=APP.seen.filter(i=>!APP.round.includes(i));
+  let cands=[];
+  cands.push(...shuffle(lastWrong).slice(0,3));
+  cands.push(...shuffle(unseen.filter(i=>!cands.includes(i))).slice(0,N-cands.length));
+  if(cands.length<N) cands.push(...shuffle(seenOld.filter(i=>!cands.includes(i))).slice(0,N-cands.length));
+  if(cands.length<N) cands.push(...shuffle(BANK.map((_,i)=>i).filter(i=>!cands.includes(i))).slice(0,N-cands.length));
+  const round=shuffle(cands).slice(0,N);
+  round.forEach(i=>{if(!APP.seen.includes(i))APP.seen.push(i);});
+  APP.round=round;APP.answers={};APP.opts={};APP.roundNum=(APP.roundNum||0)+1;
+}
+
+function doReset(){buildRound();save();render();window.scrollTo({top:0,behavior:'smooth'});}
+
+function pick(pos,oi){
+  if(APP.answers[pos]) return;
+  const q=BANK[APP.round[pos]];
+  APP.answers[pos]={opt:q.opts[oi],v:oi===q.ans?1:0};
+  save();render();
+  setTimeout(()=>{
+    const done=Object.keys(APP.answers).length;
+    if(done<N){
+      const cards=document.querySelectorAll('#q-area .q-card');
+      const next=[...Array(N).keys()].find(j=>j>pos&&!APP.answers[j]);
+      if(next!==undefined) cards[next]?.scrollIntoView({behavior:'smooth',block:'center'});
+    } else {
+      document.querySelector('#q-area .result-card')?.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  },350);
+}
+
+function render(){
+  const done=Object.keys(APP.answers).length;
+  const ok=Object.values(APP.answers).filter(v=>v&&v.v===1).length;
+  const bad=done-ok;
+  const pct=done?Math.round(ok/done*100):null;
+
+  document.getElementById('round-label').textContent=
+    `Round ${APP.roundNum} \u00b7 10 questions from bank of ${BANK.length} \u00b7 Seen: ${APP.seen.length}/${BANK.length}`;
+  document.getElementById('s-num').textContent=`${done}/${N}`;
+  document.getElementById('s-ok').textContent=ok;
+  document.getElementById('s-bad').textContent=bad;
+  document.getElementById('s-pct').textContent=pct===null?'\u2014':pct+'%';
+
+  const tr=document.getElementById('tracker');
+  tr.innerHTML='';
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');
+    d.className='tracker-dot'+(APP.answers[i]?APP.answers[i].v===1?' t-ok':' t-bad':i===done?' t-cur':'');
+    tr.appendChild(d);
+  }
+
+  const area=document.getElementById('q-area');
+  area.innerHTML='';
+  const L=['A','B','C','D'];
+  const tmap={cisi:'CISI exam',concept:'Concept',scenario:'Scenario',detail:'Detail'};
+  const tcls={cisi:'tag-cisi',concept:'tag-concept',scenario:'tag-scenario',detail:'tag-detail'};
+
+  APP.round.forEach((qi,pos)=>{
+    const q=BANK[qi];
+    const answered=!!APP.answers[pos];
+    const chosen=APP.answers[pos]?.opt;
+    if(!APP.opts[pos]) APP.opts[pos]=shuffle(q.opts.map((_,i)=>i));
+    const oo=APP.opts[pos];
+    let optsHtml=oo.map((oi,li)=>{
+      let c='opt';
+      if(answered) c+=' dis';
+      if(answered&&oi===q.ans) c+=' ok';
+      else if(answered&&q.opts[oi]===chosen&&oi!==q.ans) c+=' bad';
+      return `<div class="${c}" onclick="pick(${pos},${oi})"><span class="opt-l">${L[li]}</span><span>${q.opts[oi]}</span></div>`;
+    }).join('');
+    let expHtml=answered?`<div class="exp-box show ${APP.answers[pos].v===1?'exp-ok':'exp-bad'}"><strong>${APP.answers[pos].v===1?'Correct!':'Incorrect.'}</strong> ${q.exp}</div>`:'';
+    const card=document.createElement('div');
+    card.className='q-card';
+    card.innerHTML=`<div class="q-meta"><span class="q-num">Q${pos+1}</span><span class="q-tag ${tcls[q.tag]}">${tmap[q.tag]}</span><span class="q-topic">${q.topic}</span></div><div class="q-text">${q.q}</div><div class="opts">${optsHtml}</div>${expHtml}`;
+    area.appendChild(card);
+  });
+
+  if(done===N){
+    const pF=Math.round(ok/N*100);
+    let lbl,col,grade;
+    if(pF>=80){lbl='Pass standard met!';col='var(--teal-m)';grade='Pass \u2713';}
+    else if(pF>=70){lbl='Close to pass standard \u2014 review weaker areas.';col='var(--amber)';grade='Near Pass';}
+    else if(pF>=60){lbl='Borderline \u2014 further study recommended.';col='var(--coral-m)';grade='Borderline';}
+    else{lbl='Below pass standard \u2014 keep practising.';col='#A32D2D';grade='Needs Work';}
+
+    const ts={};
+    APP.round.forEach((qi,pos)=>{
+      const t=BANK[qi].topic;
+      if(!ts[t]) ts[t]={ok:0,tot:0};
+      ts[t].tot++;
+      if(APP.answers[pos]?.v===1) ts[t].ok++;
+    });
+    let topicHtml=Object.entries(ts).map(([t,s])=>{
+      const tp=Math.round(s.ok/s.tot*100);
+      const c=tp>=80?'var(--teal-m)':tp>=60?'var(--amber)':'var(--coral-m)';
+      return `<div class="topic-row"><div class="topic-name">${t}</div><div style="font-size:.72rem;color:var(--text3);margin-bottom:.25rem">${s.ok}/${s.tot}</div><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:${tp}%;background:${c}"></div></div></div>`;
+    }).join('');
+
+    let reviewHtml=APP.round.map((qi,pos)=>{
+      const q=BANK[qi];const v=APP.answers[pos]?.v===1;
+      return `<div class="q-review-item ${v?'r-ok':'r-bad'}"><span class="r-icon">${v?'\u2713':'\u2717'}</span><div><strong>Q${pos+1} \u00b7 ${q.topic}.</strong> ${q.q}<br><span style="font-size:.78rem;opacity:.85">Answer: ${q.opts[q.ans]}</span></div></div>`;
+    }).join('');
+
+    const rc=document.createElement('div');
+    rc.className='result-card';
+    rc.style.marginTop='1rem';
+    rc.innerHTML=`
+      <div style="font-size:.85rem;color:var(--text2);margin-bottom:.3rem">Round ${APP.roundNum} complete</div>
+      <div class="result-big" style="color:${col}">${ok}/${N}</div>
+      <div class="result-grade" style="background:${col}22;color:${col}">${grade}</div>
+      <div class="result-bar-wrap"><div class="result-bar-fill" style="width:${pF}%;background:${col}"></div></div>
+      <div style="font-size:.82rem;color:var(--text2);margin:.3rem 0 .2rem">${pF}% correct \u00b7 ${lbl}</div>
+      <div class="result-breakdown">
+        <span class="rp" style="background:var(--green-l);color:var(--green)">\u2713 Correct: ${ok}</span>
+        <span class="rp" style="background:var(--coral-l);color:var(--coral)">\u2717 Wrong: ${N-ok}</span>
+        <span class="rp" style="background:var(--navy-l);color:var(--navy-d)">Seen: ${APP.seen.length}/${BANK.length}</span>
+      </div>
+      <div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.55rem;text-align:left">Performance by topic:</div>
+      <div class="topic-grid">${topicHtml}</div>
+      <div class="btn-row" style="margin-bottom:1.4rem"><button class="btn btn-p" onclick="doReset()">\u21ba New round (smart shuffle)</button></div>
+      <div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.5rem;text-align:left">Question review:</div>
+      <div class="q-review-list">${reviewHtml}</div>`;
+    area.appendChild(rc);
+  }
+}
+
+load();
+if(!APP.round||APP.round.length!==N){buildRound();}
+if(!APP.opts) APP.opts={};
+if(APP.round.some(i=>i<0||i>=BANK.length)){buildRound();}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CISI Chapter 3 — Practice Test</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1E2761;--navy-l:#CADCFC;--navy-d:#12195F;
+  --teal:#028090;--teal-l:#D6F0F3;--teal-d:#015E6A;--teal-m:#1D9E75;
+  --amber:#B07D12;--amber-l:#FEF3C7;--amber-d:#7C5A0A;
+  --coral:#993C1D;--coral-l:#FAECE7;--coral-m:#D85A30;
+  --purple:#534AB7;--purple-l:#EEEDFE;--purple-d:#3C3489;
+  --green-l:#E1F5EE;--green:#085041;
+  --gray:#64748B;--gray-l:#F1F5F9;--gray-m:#CBD5E1;--gray-d:#334155;
+  --bg:#F0F4F8;--card:#fff;--text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --radius:12px;--shadow:0 2px 10px rgba(0,0,0,.09);
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app-header{background:linear-gradient(135deg,var(--navy),var(--teal));padding:1.2rem 1.5rem .85rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.app-title{color:#fff;font-size:1.08rem;font-weight:700;line-height:1.3}
+.app-sub{color:var(--navy-l);font-size:.72rem;margin-top:.18rem}
+.reset-btn{background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.38);color:#fff;border-radius:7px;padding:.36rem .95rem;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.reset-btn:hover{background:rgba(255,255,255,.3)}
+.screen{padding:1.4rem;max-width:820px;margin:0 auto}
+.round-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--navy);color:var(--navy-l);border-radius:7px;padding:.3rem .85rem;font-size:.73rem;font-weight:600;margin-bottom:1rem}
+.tracker{display:flex;gap:3px;margin-bottom:1.05rem}
+.tracker-dot{flex:1;height:10px;border-radius:5px;background:var(--gray-m);transition:background .3s}
+.tracker-dot.t-ok{background:var(--teal-m)}.tracker-dot.t-bad{background:var(--coral-m)}.tracker-dot.t-cur{background:var(--navy-l)}
+.score-bar{display:flex;gap:.65rem;margin-bottom:1rem}
+.sc{flex:1;background:var(--card);border-radius:10px;padding:.58rem .75rem;text-align:center;border:1px solid var(--gray-m);box-shadow:var(--shadow)}
+.sc .n{font-size:1.38rem;font-weight:700;color:var(--teal);line-height:1}
+.sc .n-ok{color:var(--teal-m)}.sc .n-bad{color:var(--coral-m)}
+.sc .l{font-size:.67rem;color:var(--text3);margin-top:.18rem}
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.4rem 1.5rem;margin-bottom:1rem;border:1px solid rgba(0,0,0,.05)}
+.q-meta{display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem;flex-wrap:wrap}
+.q-num{font-size:.68rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.07em}
+.q-tag{font-size:.64rem;font-weight:700;padding:.15rem .48rem;border-radius:20px}
+.tag-cisi{background:#FEF3C7;color:#7C5A0A}.tag-concept{background:var(--purple-l);color:var(--purple-d)}
+.tag-scenario{background:var(--teal-l);color:var(--teal-d)}.tag-detail{background:var(--gray-l);color:var(--gray-d)}
+.q-topic{font-size:.64rem;color:var(--text3);margin-left:auto}
+.q-text{font-size:.93rem;font-weight:500;line-height:1.6;margin-bottom:.95rem;color:var(--text)}
+.opts{display:flex;flex-direction:column;gap:.42rem}
+.opt{display:flex;align-items:flex-start;gap:.65rem;padding:.68rem .95rem;border-radius:8px;border:1.5px solid var(--gray-m);cursor:pointer;font-size:.86rem;line-height:1.46;background:var(--card);transition:all .16s}
+.opt:hover:not(.dis){border-color:var(--teal);background:var(--teal-l)}
+.opt.ok{border-color:var(--teal-m);background:var(--green-l);color:var(--green)}
+.opt.bad{border-color:var(--coral-m);background:var(--coral-l);color:var(--coral)}
+.opt.dis{cursor:default}
+.opt-l{width:21px;height:21px;min-width:21px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:.69rem;font-weight:700;color:var(--gray);margin-top:1px;flex-shrink:0}
+.opt.ok .opt-l{background:var(--teal-m);color:#fff}.opt.bad .opt-l{background:var(--coral-m);color:#fff}
+.exp-box{margin-top:.8rem;padding:.7rem 1rem;border-radius:8px;font-size:.81rem;line-height:1.62;display:none}
+.exp-box.show{display:block}
+.exp-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.exp-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.result-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem 1.5rem;text-align:center;margin-top:.5rem}
+.result-big{font-size:3.2rem;font-weight:800;margin:.4rem 0}
+.result-grade{display:inline-block;padding:.38rem 1.2rem;border-radius:20px;font-size:.92rem;font-weight:700;margin:.5rem 0 .8rem}
+.result-bar-wrap{background:var(--gray-l);border-radius:20px;height:14px;overflow:hidden;margin:.75rem auto;max-width:320px}
+.result-bar-fill{height:100%;border-radius:20px;transition:width .8s ease}
+.result-breakdown{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 1.2rem}
+.rp{padding:.3rem .9rem;border-radius:20px;font-size:.8rem;font-weight:600}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin:.5rem 0 1.2rem;text-align:left}
+.topic-row{background:var(--gray-l);border-radius:8px;padding:.5rem .75rem;font-size:.78rem}
+.topic-name{color:var(--text2);font-weight:600;margin-bottom:.2rem}
+.topic-bar-wrap{background:var(--gray-m);border-radius:10px;height:6px;overflow:hidden}
+.topic-bar-fill{height:100%;border-radius:10px}
+.q-review-list{text-align:left;margin-top:.5rem}
+.q-review-item{padding:.65rem 1rem;border-radius:8px;margin-bottom:.45rem;font-size:.83rem;line-height:1.52;display:flex;gap:.65rem;align-items:flex-start}
+.q-review-item.r-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.q-review-item.r-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.r-icon{font-size:.9rem;flex-shrink:0;margin-top:.08rem}
+.btn{padding:.58rem 1.3rem;border:none;border-radius:8px;cursor:pointer;font-size:.86rem;font-weight:600;transition:all .2s}
+.btn-p{background:var(--teal);color:#fff}.btn-p:hover{background:var(--teal-d)}
+.btn-row{display:flex;gap:.65rem;flex-wrap:wrap;justify-content:center}
+</style>
+</head>
+<body>
+<div class="app-header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">CISI — Chapter 3: Fitness and Propriety</div>
+      <div class="app-sub">Sections 3.1 · 3.2 · 3.3 · 3.4 · 3.5 &nbsp;|&nbsp; 10 questions per round &nbsp;|&nbsp; Bank: 56 questions</div>
+    </div>
+    <button class="reset-btn" onclick="doReset()">&#8635; New round</button>
+  </div>
+</div>
+<div class="screen">
+  <div class="round-pill" id="round-label">Round 1 &middot; 10 questions from bank of 55</div>
+  <div class="tracker" id="tracker"></div>
+  <div class="score-bar">
+    <div class="sc"><div class="n" id="s-num">0/10</div><div class="l">Progress</div></div>
+    <div class="sc"><div class="n n-ok" id="s-ok">0</div><div class="l">Correct</div></div>
+    <div class="sc"><div class="n n-bad" id="s-bad">0</div><div class="l">Wrong</div></div>
+    <div class="sc"><div class="n" id="s-pct">&mdash;</div><div class="l">Score</div></div>
+  </div>
+  <div id="q-area"></div>
+</div>
+<script>
+const BANK=[
+// ── 3.1 BACKGROUND ────────────────────────────────────────────────────────
+{tag:"cisi",topic:"3.1 Background",
+q:"What triggered the creation of the Parliamentary Commission for Banking Standards (PCBS)?",
+opts:["The dot-com crash of 2000","The 2007–08 banking crisis and significant conduct failings, including manipulation of LIBOR","The introduction of MiFID II in 2018","The collapse of Barings Bank in 1995"],
+ans:1,exp:"The PCBS was set up in response to the 2007–08 banking crisis and significant conduct failings such as the manipulation of LIBOR. It recommended a new accountability framework focused on senior management."},
+
+{tag:"cisi",topic:"3.1 Background",
+q:"The SM&CR was introduced to the banking sector in which year?",
+opts:["2013","2014","2016","2018"],
+ans:2,exp:"The FCA and PRA introduced the SM&CR to the banking sector in 2016, following Parliamentary legislation that built on PCBS recommendations. Parliament later required it to be extended to all FSMA-authorised firms."},
+
+{tag:"cisi",topic:"3.1 Background",
+q:"To which firms does the SM&CR apply?",
+opts:["All UK-registered companies","All FSMA-authorised firms except Appointed Representatives and Benchmark Administrators","Only banks and building societies","Only dual-regulated firms"],
+ans:1,exp:"The SM&CR applies to all FSMA-authorised firms, except Appointed Representatives and Benchmark Administrators."},
+
+{tag:"cisi",topic:"3.1 Background",
+q:"Which of the following correctly lists the three components of the SM&CR?",
+opts:["Approved Persons Regime, Fitness Test, Conduct Rules","Senior Managers Regime, Certification Regime, and Conduct Rules","Senior Managers Regime, Fit and Proper Test, and Compliance Framework","Accountability Regime, Conduct Standards, and Prudential Rules"],
+ans:1,exp:"The SM&CR comprises three components: (1) Senior Managers Regime (SMR); (2) Certification Regime (CR); and (3) Conduct Rules."},
+
+{tag:"cisi",topic:"3.1 Background",
+q:"When the FCA applied the SM&CR to solo-regulated firms, it introduced a proportionate regime with three firm types. Which answer correctly lists all three?",
+opts:["Basic, Intermediate and Advanced","Core scope, Limited scope and Enhanced scope","Standard, Extended and Premium","Category A, B and C"],
+ans:1,exp:"The three types are: (1) Core scope — subject to 'baseline' SM&CR requirements; (2) Limited scope — subject to fewer requirements; (3) Enhanced scope — subject to significantly greater requirements."},
+
+{tag:"cisi",topic:"3.1 Background",
+q:"Under the SM&CR, a senior manager will only be guilty of misconduct if:",
+opts:["Any regulatory breach occurs within their area of responsibility","The FCA is able to demonstrate that the senior manager failed to take reasonable steps to prevent a regulatory breach","The senior manager had direct personal knowledge of the breach","The breach resulted in financial loss to customers"],
+ans:1,exp:"A senior manager will only be guilty of misconduct if the FCA can prove they failed to take reasonable steps to prevent a regulatory breach. The burden of proof rests with the FCA, but senior managers must be able to provide evidence of reasonable steps taken."},
+
+{tag:"cisi",topic:"3.1 Background",
+q:"The Conduct Rules apply to which employees?",
+opts:["Only senior managers holding SMFs","Only customer-facing staff","All relevant employees based in the UK or who deal with customers in the UK, in a position to affect the FCA's objectives","Only employees of banks and deposit-takers"],
+ans:2,exp:"The Conduct Rules apply to all relevant employees based in the UK, or who deal with customers in the UK — all employees in a position to affect the FCA's objectives. They are designed to raise overall conduct standards in the financial services industry."},
+
+// ── 3.2 SMR ───────────────────────────────────────────────────────────────
+{tag:"cisi",topic:"3.2 SMR",
+q:"Which of the following is an example of an individual who would typically hold a Senior Management Function (SMF)?",
+opts:["A junior analyst working in a bank's research department","The Money Laundering Reporting Officer (MLRO)","A customer service representative","A branch cashier"],
+ans:1,exp:"The MLRO is an example of an SMF holder — alongside CEO, CFO, Chief Risk Officer, Head of Compliance and Head of Internal Audit. SMFs include both executive-level and certain key non-executive functions."},
+
+{tag:"cisi",topic:"3.2 SMR",
+q:"Individuals performing an SMF require which of the following?",
+opts:["A CFA qualification","Annual approval from the firm's board","Regulatory approval (approved person status)","A minimum of 10 years' industry experience"],
+ans:2,exp:"Individuals performing an SMF require regulatory approval — they must be granted approved person status by the regulator before they can perform the function."},
+
+{tag:"cisi",topic:"3.2 SMR",
+q:"What is the purpose of the 'statement of responsibilities' included in a Form A application?",
+opts:["To summarise the candidate's employment history","To set out the aspects of the firm's affairs the person will be responsible for managing when performing the function","To confirm the candidate's salary and benefits package","To list the candidate's professional qualifications"],
+ans:1,exp:"The statement of responsibilities sets out the aspects of the firm's affairs the person will be responsible for managing. Regulators expect each responsibility to be allocated to a single senior manager."},
+
+{tag:"cisi",topic:"3.2 SMR",
+q:"What is FSMA's statutory time limit for the FCA and PRA to determine a fitness and propriety application (Form A)?",
+opts:["30 days","60 days","90 days","6 months"],
+ans:2,exp:"FSMA imposes a statutory obligation on the FCA and PRA to reach a determination on fitness and propriety within 90 days of receiving Form A. The clock is stopped if further information is requested."},
+
+{tag:"cisi",topic:"3.2 SMR",
+q:"Prior to submitting Form A, what must a firm do regarding regulatory references?",
+opts:["Obtain character references from two personal referees","Take all reasonable steps to obtain a regulatory reference from the candidate's current and previous employers within the past six years","Submit the candidate's last three annual performance reviews","Conduct an independent background check through a third-party provider"],
+ans:1,exp:"Prior to Form A submission, a firm must take all reasonable steps to obtain a regulatory reference from the candidate's current employer and anyone who has been a candidate's previous employer within the past six years."},
+
+{tag:"cisi",topic:"3.2 SMR",
+q:"What is a 'Management Responsibilities Map'?",
+opts:["A document listing all employees who are subject to the Certification Regime","A document that maps the organisational structure of the FCA","A document that records a firm's management and governance arrangements, including how prescribed responsibilities have been allocated","A map of all FCA-regulated firms in the UK"],
+ans:2,exp:"A Management Responsibilities Map documents a firm's management and governance arrangements, including how prescribed responsibilities have been allocated. Its purpose is to provide enhanced transparency of individual accountability and improve management information quality."},
+
+{tag:"cisi",topic:"3.2 SMR",
+q:"The 'Duty of Responsibility' requires SMF holders to take reasonable steps to do which of the following?",
+opts:["Approve all transactions above a certain threshold","Fulfil any prescribed responsibilities apportioned to them, and prevent, stop or remedy breaches","Personally supervise all staff within their area of responsibility","Attend at least 80% of all board meetings"],
+ans:1,exp:"The Duty of Responsibility requires SMF holders to take reasonable steps to: (a) fulfil any prescribed responsibilities apportioned to them, and (b) prevent, stop or remedy breaches."},
+
+{tag:"cisi",topic:"3.2 SMR",
+q:"Under PRA Supervisory Statement 28/15, who can be held accountable for boardroom decisions under the SMR?",
+opts:["Only executive directors","Only the CEO and CFO","The Chair and non-executive directors — they can be explicitly held to account for boardroom decisions in the same fashion as executive directors","Only individuals with a prescribed responsibility for that specific area"],
+ans:2,exp:"In line with PRA SS 28/15, persons holding SMFs include the Chair and non-executive directors. They can be explicitly held to account for boardroom decisions and deemed potentially culpable for poor decisions in the same fashion as executive directors."},
+
+{tag:"detail",topic:"3.2 SMR",
+q:"Which SMF number is the Chief Executive function for UK banks, and which regulator owns it?",
+opts:["SMF1, PRA","SMF1, FCA","SMF3, PRA","SMF3, FCA"],
+ans:0,exp:"SMF1 is the Chief Executive function, and it is a PRA function for UK banks. SMF3 (Executive Director function) is the FCA function. This distinction is frequently tested."},
+
+{tag:"detail",topic:"3.2 SMR",
+q:"Which of the following SMF functions is an FCA function (not PRA) for UK banks?",
+opts:["Chief Executive (SMF1)","Chief Risk function (SMF4)","Money Laundering Reporting function (SMF17)","Chief Finance function (SMF2)"],
+ans:2,exp:"SMF17 (Money Laundering Reporting function) is an FCA function for UK banks. SMF1, SMF2, and SMF4 are all PRA functions."},
+
+{tag:"detail",topic:"3.2 SMR",
+q:"SMFs 9 to 14 at banks should be held by which type of individual?",
+opts:["Approved executive directors only","Non-Executive Directors (NEDs) rather than executives","The most senior members of the executive team","Any approved person regardless of role"],
+ans:1,exp:"SMFs 9 to 14 (Chairman, Risk Committee Chair, Audit Committee Chair, Remuneration Committee Chair, Nominations Committee Chair, Senior Independent Director) should be held by approved Non-Executive Directors (NEDs) rather than executives."},
+
+{tag:"cisi",topic:"3.2.2 Solo-Regulated Firms",
+q:"How does the SM&CR apply to FCA solo-regulated firms compared to banks?",
+opts:["Identically — all the same rules apply","More stringently — more SMFs and tighter requirements","In a different manner — a lighter touch, more proportionate approach based on firm type","It does not apply to solo-regulated firms at all"],
+ans:2,exp:"The SM&CR applies to FCA solo-regulated firms in a different manner — a lighter touch, intended to be a more appropriate and proportionate approach. The degree of application depends on the firm type (Limited Scope, Core, or Enhanced)."},
+
+{tag:"cisi",topic:"3.2.2 Solo-Regulated Firms",
+q:"Which of the following is an example of a 'Limited Scope' firm under the SM&CR?",
+opts:["A major retail bank","A sole trader with no employees","A large insurance company","An investment bank subject to CRR"],
+ans:1,exp:"Sole traders with no employees are Limited Scope firms. Other examples: limited permission consumer credit firms, authorised professional firms (non-mainstream activities), oil/energy market participants, service companies."},
+
+{tag:"detail",topic:"3.2.2 Solo-Regulated Firms",
+q:"Which SMFs apply to both Core and Enhanced FCA solo-regulated firms?",
+opts:["SMF1, SMF2, SMF3, SMF9","SMF1, SMF3, SMF9, SMF16, SMF17, SMF27","SMF1, SMF4, SMF16, SMF17","SMF3, SMF9, SMF16, SMF18, SMF27"],
+ans:1,exp:"Core and Enhanced Firms are subject to: SMF1 (Chief Executive), SMF3 (Executive Director), SMF9 (Chair), SMF16 (Compliance Oversight), SMF17 (MLRO), SMF27 (Partner). Enhanced Firms additionally require SMF18 (Other Overall Responsibility)."},
+
+{tag:"cisi",topic:"3.2 Consumer Duty",
+q:"Following implementation of Consumer Duty, senior managers are required to ensure which of the following?",
+opts:["That all customer complaints are resolved within 5 business days","That Consumer Duty is reflected in firm strategies, governance, leadership and people policies, and that the firm has appropriate oversight of customer outcomes","That a dedicated Consumer Duty team is maintained","That all product fees are reduced to reflect fair value"],
+ans:1,exp:"Following Consumer Duty implementation, senior managers must: reflect Consumer Duty in strategies, governance and people policies; ensure appropriate oversight of customer outcomes through systems and controls; and be held accountable for 'good consumer outcomes' within their area of responsibility."},
+
+{tag:"detail",topic:"3.2 Consumer Duty",
+q:"The requirement to appoint a Consumer Duty 'champion' was removed by the FCA in which month/year?",
+opts:["July 2024","January 2025","February 2025","April 2025"],
+ans:2,exp:"The requirement to appoint a Consumer Duty 'champion' was removed by the FCA in February 2025."},
+
+// ── 3.3 CERTIFICATION REGIME ──────────────────────────────────────────────
+{tag:"cisi",topic:"3.3 Certification Regime",
+q:"How are individuals subject to the Certification Regime approved?",
+opts:["By the FCA or PRA directly, through the same process as SMFs","By firms — the firm assesses they are 'fit and proper' and provides them with an annual certificate","By the relevant professional body (eg, CFA Institute)","By HM Treasury on the recommendation of the FCA"],
+ans:1,exp:"Individuals under the Certification Regime are NOT approved by the regulators. Instead, firms make an assessment that they are 'fit and proper' and provide them with an annual certificate. This introduces an administrative and evidential burden on firms rather than the regulators."},
+
+{tag:"cisi",topic:"3.3 Certification Regime",
+q:"How frequently must firms assess the fitness and propriety of Certified Persons?",
+opts:["Every three years","Every two years","Annually (at recruitment and on an annual basis thereafter)","Only at recruitment stage"],
+ans:2,exp:"The CR requires firms to assess fitness and propriety both at the recruitment stage and on an annual basis thereafter. Senior management must attest annually that those individuals remain fit and proper."},
+
+{tag:"cisi",topic:"3.3 Certification Regime",
+q:"Who bears the administrative and evidential burden under the Certification Regime?",
+opts:["The FCA","The PRA","The firms themselves (rather than the regulators)","The individual employees subject to the regime"],
+ans:2,exp:"The Certification Regime introduces an administrative and evidential burden on firms rather than the regulators. It is the firm's responsibility to assess and certify individuals."},
+
+{tag:"cisi",topic:"3.3 Certification Regime",
+q:"The PRA approach to the Certification Regime limits scope to which category of staff?",
+opts:["All customer-facing employees","Material risk takers (MRTs) as defined in the Capital Requirements Regulation (CRR) — individuals subject to the Remuneration Code ('Code staff')","All employees of banks earning above a certain salary threshold","All employees who previously held a controlled function under APER"],
+ans:1,exp:"The PRA approach limits the Certification Regime to 'material risk takers' (MRTs) as defined in the CRR — individuals subject to the Remuneration Code ('Code staff'). This contrasts with the broader FCA approach."},
+
+{tag:"cisi",topic:"3.3 Certification Regime",
+q:"Which of the following is NOT listed as a 'significant-harm function' under the Certification Regime?",
+opts:["CASS oversight","Proprietary trader","Benchmark submission and administration","Chief Executive"],
+ans:3,exp:"Chief Executive is a Senior Management Function (SMF1), not a Certification Regime significant-harm function. Significant-harm functions include CASS oversight, benchmark submission, proprietary trader, significant management, functions requiring qualifications, managers of certification employees, and material risk takers."},
+
+{tag:"cisi",topic:"3.3 Certification Regime",
+q:"If a firm decides NOT to issue a certificate to an individual (because they do not meet the fit and proper criteria), what must the firm do?",
+opts:["Simply remove the individual from their role with no further action required","Give written notice explaining what steps they propose to take and notify the FCA of the circumstances","Wait for the FCA to take action","Refer the matter to the HR department only"],
+ans:1,exp:"If a certificate is not issued because the individual fails the fitness and propriety criteria, the firm must give written notice explaining what steps (if any) they propose to take, as well as notifying the FCA of the circumstances."},
+
+{tag:"cisi",topic:"3.3 Certification Regime",
+q:"How is the Certification Regime handled when an individual performs multiple certification functions?",
+opts:["A separate certificate must be issued for each individual function","Fitness and propriety must be assessed for each function, but a single certificate can cover multiple functions","Only the highest-risk function requires assessment","The individual can self-certify for additional functions"],
+ans:1,exp:"Where individuals are performing multiple certification functions, fitness and propriety must be assessed for each certification function. However, a single certificate can cover the multiple functions being performed."},
+
+{tag:"cisi",topic:"3.3 Certification Regime",
+q:"The term 'material risk taker' is defined in the PRA Remuneration Rulebook as:",
+opts:["An individual whose decisions could result in criminal prosecution","An individual whose activities, carried out on behalf of the firm, could have a material impact on the firm's risk profile","A senior manager holding an SMF with PRA approval","Any employee earning above the firm's median salary"],
+ans:1,exp:"A 'material risk taker' is defined in the PRA Remuneration Rulebook as an individual whose activities, carried out on behalf of the firm, could have a material impact on the firm's risk profile."},
+
+{tag:"cisi",topic:"3.3 Certification Regime",
+q:"The 'code staff' term refers to:",
+opts:["Employees who are subject to the Conduct Rules","Employees whose activities have a material impact on the firm's risk profile","Staff who work in coding or technology functions","All employees subject to annual performance assessments"],
+ans:1,exp:"'Code staff' refers to employees whose activities have a material impact on the firm's risk profile. This is the same as 'material risk takers' in the PRA Remuneration Rulebook context."},
+
+{tag:"scenario",topic:"3.3 Certification Regime",
+q:"An overseas employee of a UK bank works in Singapore and never deals with UK clients. Their role involves managing a portfolio that could materially impact the firm's risk profile. Are they subject to the Certification Regime?",
+opts:["No — they are based overseas and therefore outside the scope","Yes — as a material risk taker/code staff member, the Certification Regime applies regardless of location","Only if they visit the UK more than 10 times per year","Only if they are British nationals"],
+ans:1,exp:"The Certification Regime can impact overseas employees. It applies to individuals deemed to be material risk takers ('code staff') for the firm due to their role, regardless of where they are located."},
+
+{tag:"concept",topic:"3.3 Certification Regime",
+q:"What is the key difference between the SMR and the Certification Regime in terms of who approves individuals?",
+opts:["Both require regulatory approval from the FCA or PRA","SMR individuals are approved by the firm; Certification Regime individuals are approved by the regulator","SMR individuals require regulatory approval; Certification Regime individuals are assessed and certified by the firm itself","Both require approval by the firm's board of directors only"],
+ans:2,exp:"Key distinction: SMR individuals require regulatory approval (approved person status). Certification Regime individuals are NOT approved by the regulators — instead, firms assess and certify them as 'fit and proper' on an annual basis."},
+
+// ── 3.4 CONDUCT RULES ─────────────────────────────────────────────────────
+{tag:"cisi",topic:"3.4 Conduct Rules",
+q:"To which employees do the Conduct Rules apply?",
+opts:["Only senior managers holding SMFs","Only Certified Persons","All individuals except ancillary staff such as cleaners and catering staff","All FSMA-authorised firms and their staff without exception"],
+ans:2,exp:"The Conduct Rules apply to all individuals except ancillary staff such as cleaners and catering staff. The regulator must be notified of breaches and any formal disciplinary action taken."},
+
+{tag:"cisi",topic:"3.4 Conduct Rules",
+q:"How many individual Conduct Rules must all relevant employees adhere to, and how many additional rules apply to Senior Managers?",
+opts:["4 for all staff; 2 additional for senior managers","5 for all staff; 4 additional for senior managers (SC1–SC4)","6 for all staff; 4 additional for senior managers","3 for all staff; 6 additional for senior managers"],
+ans:1,exp:"There are 5 individual Conduct Rules (Rules 1–5, plus Rule 6 for Consumer Duty firms) which all relevant employees must adhere to. Senior managers must additionally adhere to 4 further Conduct Rules (SC1–SC4)."},
+
+{tag:"cisi",topic:"3.4 Conduct Rules",
+q:"What does Conduct Rule 3 require?",
+opts:["You must act with integrity","You must act with due skill, care and diligence","You must be open and cooperative with the FCA, the PRA and other regulators","You must pay due regard to the interests of customers and treat them fairly"],
+ans:2,exp:"Conduct Rule 3: You must be open and cooperative with the FCA, the PRA and other regulators. This applies to all relevant employees, not just senior managers."},
+
+{tag:"cisi",topic:"3.4 Conduct Rules",
+q:"Conduct Rule 6 states that 'You must act to deliver good outcomes for retail customers'. When does Rule 6 apply?",
+opts:["To all authorised firms regardless of Consumer Duty scope","To individuals working for firms that are subject to the Consumer Duty requirements","Only to senior managers at retail banks","Only to firms with more than 100 retail clients"],
+ans:1,exp:"Rule 6 applies to individuals working for firms subject to the Consumer Duty requirements. Where Rule 6 applies, Rule 4 ('You must pay due regard to the interests of customers and treat them fairly') ceases to apply."},
+
+{tag:"cisi",topic:"3.4 Conduct Rules",
+q:"What happens to Conduct Rule 4 when Conduct Rule 6 applies to a firm?",
+opts:["Rule 4 continues to apply alongside Rule 6","Rule 4 is strengthened and takes precedence over Rule 6","Rule 4 ceases to apply to individuals where Rule 6 applies","Rule 4 is replaced by a new rule specific to senior managers"],
+ans:2,exp:"Where Rule 6 applies (Consumer Duty firms), Rule 4 ('You must pay due regard to the interests of customers and treat them fairly') ceases to apply. For firms outside Consumer Duty scope, only the original 5 rules apply and Rule 4 continues."},
+
+{tag:"cisi",topic:"3.4 Conduct Rules",
+q:"Senior Manager Conduct Rule SC1 requires a senior manager to:",
+opts:["Disclose any information the FCA or PRA would reasonably expect notice of","Ensure that any delegation of responsibilities is to an appropriate person and oversee its discharge","Take reasonable steps to ensure that the business for which they are responsible is controlled effectively","Ensure the business complies with the relevant requirements of the regulatory system"],
+ans:2,exp:"SC1: You must take reasonable steps to ensure that the business of the firm for which you are responsible is controlled effectively. SC2 covers regulatory compliance, SC3 covers delegation oversight, and SC4 covers disclosure."},
+
+{tag:"cisi",topic:"3.4 Conduct Rules",
+q:"Senior Manager Conduct Rule SC4 requires a senior manager to:",
+opts:["Ensure effective control of the business","Ensure regulatory compliance","Oversee delegated responsibilities effectively","Disclose appropriately any information of which the FCA or PRA would reasonably expect notice"],
+ans:3,exp:"SC4: You must disclose appropriately any information of which the FCA or PRA would reasonably expect notice. This links closely to the SMR's general principle of openness with regulators."},
+
+{tag:"cisi",topic:"3.4 Conduct Rules",
+q:"Senior Manager Conduct Rule SC3 requires a senior manager to:",
+opts:["Ensure the business is controlled effectively","Ensure the business complies with regulatory requirements","Take reasonable steps to ensure that any delegation of responsibilities is to an appropriate person and that they oversee the discharge of the delegated responsibility effectively","Disclose information to regulators"],
+ans:2,exp:"SC3: You must take reasonable steps to ensure that any delegation of your responsibilities is to an appropriate person and that you oversee the discharge of the delegated responsibility effectively. This is the 'delegation' rule."},
+
+{tag:"scenario",topic:"3.4 Conduct Rules",
+q:"A trading analyst at a Core scope firm is found to have been knowingly submitting inaccurate data to management, causing material misstatements. Which Conduct Rule is most directly breached?",
+opts:["Rule 2 — due skill, care and diligence","Rule 1 — integrity","Rule 4 — customers' interests","Rule 5 — market conduct"],
+ans:1,exp:"Rule 1 — You must act with integrity. Knowingly submitting inaccurate data is a direct breach of the integrity standard. Rule 2 might also be relevant, but intentional inaccuracy is primarily an integrity issue."},
+
+{tag:"scenario",topic:"3.4 Conduct Rules",
+q:"A senior manager at an investment firm delegates responsibility for oversight of a complex new product to a relatively junior staff member with no relevant experience, without any follow-up. A significant compliance failure occurs. Which Senior Manager Conduct Rule is most directly breached?",
+opts:["SC1 — effective control","SC2 — regulatory compliance","SC3 — delegation oversight","SC4 — disclosure"],
+ans:2,exp:"SC3: You must take reasonable steps to ensure that any delegation of your responsibilities is to an appropriate person and that you oversee the discharge of the delegated responsibility effectively. The delegation to an inexperienced person without oversight directly breaches SC3."},
+
+// ── 3.5 FIT AND PROPER TEST ───────────────────────────────────────────────
+{tag:"cisi",topic:"3.5 FIT",
+q:"The three most important criteria for the Fit and Proper Test (FIT) assessment are:",
+opts:["Experience, qualifications and salary","Honesty, integrity and reputation; competence and capability; financial soundness","Regulatory history, educational record and professional memberships","Nationality, residency and employment history"],
+ans:1,exp:"The three most important FIT criteria are: (1) honesty, integrity and reputation; (2) competence and capability; and (3) financial soundness. The regulator assesses applicants against these criteria when determining fitness and propriety."},
+
+{tag:"cisi",topic:"3.5 FIT",
+q:"Responsibility for satisfying the regulator that a candidate is fit and proper lies with:",
+opts:["The candidate personally","The firm making the application","The industry body (eg, CFA Institute or CISI)","The regulator itself"],
+ans:1,exp:"The responsibility lies with the firm making the application to satisfy the regulator(s) that the candidate is fit and proper. The regulator considers the SMF applied for, the firm's activities, and the firm's Part 4A permission."},
+
+{tag:"cisi",topic:"3.5.1 Honesty",
+q:"Under the honesty, integrity and reputation criterion of the FIT, the FCA will have regard to whether a person has been convicted of a criminal offence. Which types of offence receive particular consideration?",
+opts:["Motoring offences and minor public order offences","Fraud, dishonesty and financial crime","Environmental offences and corporate manslaughter","Health and safety breaches"],
+ans:1,exp:"Particular consideration is given to offences of fraud, dishonesty and financial crime under the honesty, integrity and reputation criterion."},
+
+{tag:"cisi",topic:"3.5.1 Honesty",
+q:"Under the FIT honesty and integrity criterion, the FCA will consider whether a person has been involved in an insolvent business. Which of the following is also listed as a relevant consideration?",
+opts:["Having taken out a mortgage above a certain value","Having been disqualified as a director or dismissed from a position of trust","Having changed employment more than three times in five years","Having held more than two directorships simultaneously"],
+ans:1,exp:"The FCA considers whether a person has been involved in an insolvent business OR disqualified as a director OR dismissed from a position of trust as part of the honesty, integrity and reputation assessment."},
+
+{tag:"cisi",topic:"3.5.1 Honesty",
+q:"How does the FCA treat each FIT application with respect to past matters?",
+opts:["All applications are treated identically with no discretion","Each application is treated on its merits, considering the seriousness and circumstances of any matters and the length of time elapsed since the matter arose","All criminal convictions automatically disqualify a person regardless of circumstances","Only matters arising in the past 5 years are considered"],
+ans:1,exp:"Each application will be treated on its merits, considering the seriousness and circumstances of any matters arising, as well as (in some cases) the length of time which has elapsed since the matter arose."},
+
+{tag:"cisi",topic:"3.5.2 Competence",
+q:"Under the competence and capability criterion of the FIT, the FCA will have particular regard to whether the person satisfies which of the following?",
+opts:["Whether they hold a university degree in finance","Whether they satisfy the relevant requirements of the Training and Competence Sourcebook, have demonstrated the required experience and training, and have adequate time to perform the controlled function","Whether they have passed all CISI examinations","Whether they have at least 5 years' experience in financial services"],
+ans:1,exp:"The FCA considers: (1) whether the person satisfies requirements of the Training and Competence Sourcebook; (2) whether they have demonstrated experience and training needed for the SMF; and (3) whether they have adequate time to perform the function."},
+
+{tag:"cisi",topic:"3.5.2 Competence",
+q:"Under the FIT competence criterion, previous convictions or dismissals for drug or alcohol abuse will be considered in which circumstance?",
+opts:["Always — they are automatically disqualifying","Only if they relate to the continuing ability of the person to perform the SMF for which they are being assessed","If they occurred within the past 3 years","Only for customer-facing roles"],
+ans:1,exp:"Previous convictions or dismissals/suspensions for drug or alcohol abuse are only considered if they relate to the continuing ability of the person to perform the SMF for which they are being assessed."},
+
+{tag:"cisi",topic:"3.5.3 Financial Soundness",
+q:"Under the financial soundness criterion of the FIT, the FCA will have regard to whether a person has been subject to a judgement to repay a debt that remains outstanding. Which other factor is specifically listed?",
+opts:["Whether the person currently holds more than £100,000 in personal debt","Whether the person has filed for bankruptcy, been adjudged bankrupt, had assets sequestrated or made arrangements with creditors","Whether the person has any county court judgements within the last 5 years","Whether the person's net worth exceeds a minimum threshold"],
+ans:1,exp:"The FCA specifically considers whether the person has: (1) been subject to a judgement to repay a debt remaining outstanding, or (2) filed for bankruptcy, been adjudged bankrupt, had assets sequestrated or made arrangements with creditors."},
+
+{tag:"cisi",topic:"3.5.3 Financial Soundness",
+q:"The FCA will not normally require a statement of assets and liabilities. Which statement is correct regarding limited financial means?",
+opts:["Limited financial means will always lead to an automatic rejection of an SMF application","The fact that a person may be of limited financial means will not in itself affect their suitability to perform an SMF","Limited financial means require disclosure on Form A","Limited financial means trigger automatic enhanced due diligence"],
+ans:1,exp:"The FCA will not normally require a statement of assets and liabilities. The fact that a person may be of limited financial means will not in itself affect their suitability to perform an SMF. The key issues are outstanding judgements and bankruptcy."},
+
+{tag:"scenario",topic:"3.5 FIT",
+q:"A candidate for an SMF role is found to have been involved in the management of a company that became insolvent five years ago, but was not personally found to have acted improperly. How should the FCA treat this?",
+opts:["This automatically disqualifies the candidate from holding an SMF","This is not relevant to the FIT assessment","The FCA will treat this on its merits, considering the seriousness, circumstances, and time elapsed since the matter arose","The candidate must wait 10 years before applying for any SMF"],
+ans:2,exp:"Each application is treated on its merits, considering the seriousness and circumstances of any matters and the length of time elapsed. Involvement in an insolvent business is a factor the FCA will consider, but it does not automatically disqualify — the FCA considers all circumstances."},
+
+{tag:"scenario",topic:"3.5 FIT",
+q:"An individual applying for SMF16 (Compliance Oversight) has extensive experience in risk management but has never worked in a compliance role before. Under the competence and capability criterion, what is the most important consideration?",
+opts:["Whether they hold a specific compliance qualification","Whether they have demonstrated the experience and training needed to fulfil the SMF applied for, and have adequate time to perform the function","Whether they have passed the FCA's compliance exam","Whether their salary expectations are within the firm's budget"],
+ans:1,exp:"Under competence and capability, the FCA considers whether the person has demonstrated the experience and training needed to fulfil the specific SMF applied for. The SMF applied for is a key determinant — the candidate's general experience must match the specific function's requirements."},
+{tag:"cisi",topic:"3.2 SMR",
+q:"Before submitting Form A to the regulator, a firm must obtain regulatory references from a candidate's previous employers. How far back must these references go?",
+opts:["2 years","3 years","5 years","6 years"],
+ans:3,exp:"Under the SM&CR, a firm must take all reasonable steps to obtain a regulatory reference from the candidate's current employer and anyone who has been a candidate's previous employer within the past six years."},
+];
+
+const SK='cisi_ch3_v1';
+const N=10;
+let APP={round:[],answers:{},opts:{},seen:[],roundNum:0};
+
+function save(){try{localStorage.setItem(SK,JSON.stringify(APP));}catch(e){}}
+function load(){
+  try{
+    const d=localStorage.getItem(SK);
+    if(d){const p=JSON.parse(d);if(p&&Array.isArray(p.round)&&p.round.length===N&&typeof p.roundNum==='number'&&Array.isArray(p.seen)){APP=p;}}
+  }catch(e){}
+}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function buildRound(){
+  const lastWrong=Object.entries(APP.answers).filter(([,v])=>v&&v.v===0).map(([k])=>APP.round[parseInt(k)]).filter(x=>x!==undefined);
+  const unseen=BANK.map((_,i)=>i).filter(i=>!APP.seen.includes(i));
+  const seenOld=APP.seen.filter(i=>!APP.round.includes(i));
+  let cands=[];
+  cands.push(...shuffle(lastWrong).slice(0,3));
+  cands.push(...shuffle(unseen.filter(i=>!cands.includes(i))).slice(0,N-cands.length));
+  if(cands.length<N) cands.push(...shuffle(seenOld.filter(i=>!cands.includes(i))).slice(0,N-cands.length));
+  if(cands.length<N) cands.push(...shuffle(BANK.map((_,i)=>i).filter(i=>!cands.includes(i))).slice(0,N-cands.length));
+  const round=shuffle(cands).slice(0,N);
+  round.forEach(i=>{if(!APP.seen.includes(i))APP.seen.push(i);});
+  APP.round=round;APP.answers={};APP.opts={};APP.roundNum=(APP.roundNum||0)+1;
+}
+
+function doReset(){buildRound();save();render();window.scrollTo({top:0,behavior:'smooth'});}
+
+function pick(pos,oi){
+  if(APP.answers[pos]) return;
+  const q=BANK[APP.round[pos]];
+  APP.answers[pos]={opt:q.opts[oi],v:oi===q.ans?1:0};
+  save();render();
+  setTimeout(()=>{
+    const done=Object.keys(APP.answers).length;
+    if(done<N){const cards=document.querySelectorAll('#q-area .q-card');const next=[...Array(N).keys()].find(j=>j>pos&&!APP.answers[j]);if(next!==undefined)cards[next]?.scrollIntoView({behavior:'smooth',block:'center'});}
+    else{document.querySelector('#q-area .result-card')?.scrollIntoView({behavior:'smooth',block:'start'});}
+  },350);
+}
+
+function render(){
+  const done=Object.keys(APP.answers).length;
+  const ok=Object.values(APP.answers).filter(v=>v&&v.v===1).length;
+  const bad=done-ok;
+  const pct=done?Math.round(ok/done*100):null;
+  document.getElementById('round-label').textContent=`Round ${APP.roundNum} \u00b7 10 questions from bank of ${BANK.length} \u00b7 Seen: ${APP.seen.length}/${BANK.length}`;
+  document.getElementById('s-num').textContent=`${done}/${N}`;
+  document.getElementById('s-ok').textContent=ok;
+  document.getElementById('s-bad').textContent=bad;
+  document.getElementById('s-pct').textContent=pct===null?'\u2014':pct+'%';
+  const tr=document.getElementById('tracker');tr.innerHTML='';
+  for(let i=0;i<N;i++){const d=document.createElement('div');d.className='tracker-dot'+(APP.answers[i]?APP.answers[i].v===1?' t-ok':' t-bad':i===done?' t-cur':'');tr.appendChild(d);}
+  const area=document.getElementById('q-area');area.innerHTML='';
+  const L=['A','B','C','D'];
+  const tmap={cisi:'CISI exam',concept:'Concept',scenario:'Scenario',detail:'Detail'};
+  const tcls={cisi:'tag-cisi',concept:'tag-concept',scenario:'tag-scenario',detail:'tag-detail'};
+  APP.round.forEach((qi,pos)=>{
+    const q=BANK[qi];const answered=!!APP.answers[pos];const chosen=APP.answers[pos]?.opt;
+    if(!APP.opts[pos]) APP.opts[pos]=shuffle(q.opts.map((_,i)=>i));
+    const oo=APP.opts[pos];
+    let optsHtml=oo.map((oi,li)=>{let c='opt';if(answered)c+=' dis';if(answered&&oi===q.ans)c+=' ok';else if(answered&&q.opts[oi]===chosen&&oi!==q.ans)c+=' bad';return `<div class="${c}" onclick="pick(${pos},${oi})"><span class="opt-l">${L[li]}</span><span>${q.opts[oi]}</span></div>`;}).join('');
+    let expHtml=answered?`<div class="exp-box show ${APP.answers[pos].v===1?'exp-ok':'exp-bad'}"><strong>${APP.answers[pos].v===1?'Correct!':'Incorrect.'}</strong> ${q.exp}</div>`:'';
+    const card=document.createElement('div');card.className='q-card';
+    card.innerHTML=`<div class="q-meta"><span class="q-num">Q${pos+1}</span><span class="q-tag ${tcls[q.tag]}">${tmap[q.tag]}</span><span class="q-topic">${q.topic}</span></div><div class="q-text">${q.q}</div><div class="opts">${optsHtml}</div>${expHtml}`;
+    area.appendChild(card);
+  });
+  if(done===N){
+    const pF=Math.round(ok/N*100);let lbl,col,grade;
+    if(pF>=80){lbl='Pass standard met!';col='var(--teal-m)';grade='Pass \u2713';}
+    else if(pF>=70){lbl='Close to pass standard.';col='var(--amber)';grade='Near Pass';}
+    else if(pF>=60){lbl='Borderline \u2014 further study recommended.';col='var(--coral-m)';grade='Borderline';}
+    else{lbl='Below pass standard \u2014 keep practising.';col='#A32D2D';grade='Needs Work';}
+    const ts={};APP.round.forEach((qi,pos)=>{const t=BANK[qi].topic;if(!ts[t])ts[t]={ok:0,tot:0};ts[t].tot++;if(APP.answers[pos]?.v===1)ts[t].ok++;});
+    let topicHtml=Object.entries(ts).map(([t,s])=>{const tp=Math.round(s.ok/s.tot*100);const c=tp>=80?'var(--teal-m)':tp>=60?'var(--amber)':'var(--coral-m)';return `<div class="topic-row"><div class="topic-name">${t}</div><div style="font-size:.72rem;color:var(--text3);margin-bottom:.25rem">${s.ok}/${s.tot}</div><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:${tp}%;background:${c}"></div></div></div>`;}).join('');
+    let reviewHtml=APP.round.map((qi,pos)=>{const q=BANK[qi];const v=APP.answers[pos]?.v===1;return `<div class="q-review-item ${v?'r-ok':'r-bad'}"><span class="r-icon">${v?'\u2713':'\u2717'}</span><div><strong>Q${pos+1} \u00b7 ${q.topic}.</strong> ${q.q}<br><span style="font-size:.78rem;opacity:.85">Answer: ${q.opts[q.ans]}</span></div></div>`;}).join('');
+    const rc=document.createElement('div');rc.className='result-card';rc.style.marginTop='1rem';
+    rc.innerHTML=`<div style="font-size:.85rem;color:var(--text2);margin-bottom:.3rem">Round ${APP.roundNum} complete</div><div class="result-big" style="color:${col}">${ok}/${N}</div><div class="result-grade" style="background:${col}22;color:${col}">${grade}</div><div class="result-bar-wrap"><div class="result-bar-fill" style="width:${pF}%;background:${col}"></div></div><div style="font-size:.82rem;color:var(--text2);margin:.3rem 0 .2rem">${pF}% correct \u00b7 ${lbl}</div><div class="result-breakdown"><span class="rp" style="background:var(--green-l);color:var(--green)">\u2713 Correct: ${ok}</span><span class="rp" style="background:var(--coral-l);color:var(--coral)">\u2717 Wrong: ${N-ok}</span><span class="rp" style="background:var(--navy-l);color:var(--navy-d)">Seen: ${APP.seen.length}/${BANK.length}</span></div><div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.55rem;text-align:left">Performance by topic:</div><div class="topic-grid">${topicHtml}</div><div class="btn-row" style="margin-bottom:1.4rem"><button class="btn btn-p" onclick="doReset()">\u21ba New round (smart shuffle)</button></div><div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.5rem;text-align:left">Question review:</div><div class="q-review-list">${reviewHtml}</div>`;
+    area.appendChild(rc);
+  }
+}
+load();
+if(!APP.round||APP.round.length!==N){buildRound();}
+if(!APP.opts)APP.opts={};
+if(APP.round.some(i=>i<0||i>=BANK.length)){buildRound();}
+render();
+</script>
+</body>
+</html>

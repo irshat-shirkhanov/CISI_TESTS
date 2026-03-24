@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CISI Chapter 1 — Practice Test</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1E2761;--navy-l:#CADCFC;--navy-d:#12195F;
+  --teal:#028090;--teal-l:#D6F0F3;--teal-d:#015E6A;--teal-m:#1D9E75;
+  --amber:#B07D12;--amber-l:#FEF3C7;--amber-d:#7C5A0A;
+  --coral:#993C1D;--coral-l:#FAECE7;--coral-m:#D85A30;
+  --purple:#534AB7;--purple-l:#EEEDFE;--purple-d:#3C3489;
+  --green-l:#E1F5EE;--green:#085041;
+  --gray:#64748B;--gray-l:#F1F5F9;--gray-m:#CBD5E1;--gray-d:#334155;
+  --bg:#F0F4F8;--card:#fff;--text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --radius:12px;--shadow:0 2px 10px rgba(0,0,0,.09);
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app-header{background:linear-gradient(135deg,var(--navy),var(--teal));padding:1.2rem 1.5rem .85rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.app-title{color:#fff;font-size:1.08rem;font-weight:700;line-height:1.3}
+.app-sub{color:var(--navy-l);font-size:.72rem;margin-top:.18rem}
+.reset-btn{background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.38);color:#fff;border-radius:7px;padding:.36rem .95rem;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.reset-btn:hover{background:rgba(255,255,255,.3)}
+.screen{padding:1.4rem;max-width:820px;margin:0 auto}
+.round-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--navy);color:var(--navy-l);border-radius:7px;padding:.3rem .85rem;font-size:.73rem;font-weight:600;margin-bottom:1rem}
+.tracker{display:flex;gap:3px;margin-bottom:1.05rem}
+.tracker-dot{flex:1;height:10px;border-radius:5px;background:var(--gray-m);transition:background .3s}
+.tracker-dot.t-ok{background:var(--teal-m)}
+.tracker-dot.t-bad{background:var(--coral-m)}
+.tracker-dot.t-cur{background:var(--navy-l)}
+.score-bar{display:flex;gap:.65rem;margin-bottom:1rem}
+.sc{flex:1;background:var(--card);border-radius:10px;padding:.58rem .75rem;text-align:center;border:1px solid var(--gray-m);box-shadow:var(--shadow)}
+.sc .n{font-size:1.38rem;font-weight:700;color:var(--teal);line-height:1}
+.sc .n-ok{color:var(--teal-m)}
+.sc .n-bad{color:var(--coral-m)}
+.sc .l{font-size:.67rem;color:var(--text3);margin-top:.18rem}
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.4rem 1.5rem;margin-bottom:1rem;border:1px solid rgba(0,0,0,.05)}
+.q-meta{display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem;flex-wrap:wrap}
+.q-num{font-size:.68rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.07em}
+.q-tag{font-size:.64rem;font-weight:700;padding:.15rem .48rem;border-radius:20px}
+.tag-cisi{background:#FEF3C7;color:#7C5A0A}
+.tag-concept{background:var(--purple-l);color:var(--purple-d)}
+.tag-scenario{background:var(--teal-l);color:var(--teal-d)}
+.tag-detail{background:var(--gray-l);color:var(--gray-d)}
+.q-topic{font-size:.64rem;color:var(--text3);margin-left:auto}
+.q-text{font-size:.93rem;font-weight:500;line-height:1.6;margin-bottom:.95rem;color:var(--text)}
+.opts{display:flex;flex-direction:column;gap:.42rem}
+.opt{display:flex;align-items:flex-start;gap:.65rem;padding:.68rem .95rem;border-radius:8px;border:1.5px solid var(--gray-m);cursor:pointer;font-size:.86rem;line-height:1.46;background:var(--card);transition:all .16s}
+.opt:hover:not(.dis){border-color:var(--teal);background:var(--teal-l)}
+.opt.ok{border-color:var(--teal-m);background:var(--green-l);color:var(--green)}
+.opt.bad{border-color:var(--coral-m);background:var(--coral-l);color:var(--coral)}
+.opt.dis{cursor:default}
+.opt-l{width:21px;height:21px;min-width:21px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:.69rem;font-weight:700;color:var(--gray);margin-top:1px;flex-shrink:0}
+.opt.ok .opt-l{background:var(--teal-m);color:#fff}
+.opt.bad .opt-l{background:var(--coral-m);color:#fff}
+.exp-box{margin-top:.8rem;padding:.7rem 1rem;border-radius:8px;font-size:.81rem;line-height:1.62;display:none}
+.exp-box.show{display:block}
+.exp-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.exp-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.result-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem 1.5rem;text-align:center;margin-top:.5rem}
+.result-big{font-size:3.2rem;font-weight:800;margin:.4rem 0}
+.result-grade{display:inline-block;padding:.38rem 1.2rem;border-radius:20px;font-size:.92rem;font-weight:700;margin:.5rem 0 .8rem}
+.result-bar-wrap{background:var(--gray-l);border-radius:20px;height:14px;overflow:hidden;margin:.75rem auto;max-width:320px}
+.result-bar-fill{height:100%;border-radius:20px;transition:width .8s ease}
+.result-breakdown{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 1.2rem}
+.rp{padding:.3rem .9rem;border-radius:20px;font-size:.8rem;font-weight:600}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin:.5rem 0 1.2rem;text-align:left}
+.topic-row{background:var(--gray-l);border-radius:8px;padding:.5rem .75rem;font-size:.78rem}
+.topic-name{color:var(--text2);font-weight:600;margin-bottom:.2rem}
+.topic-bar-wrap{background:var(--gray-m);border-radius:10px;height:6px;overflow:hidden}
+.topic-bar-fill{height:100%;border-radius:10px}
+.q-review-list{text-align:left;margin-top:.5rem}
+.q-review-item{padding:.65rem 1rem;border-radius:8px;margin-bottom:.45rem;font-size:.83rem;line-height:1.52;display:flex;gap:.65rem;align-items:flex-start}
+.q-review-item.r-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.q-review-item.r-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.r-icon{font-size:.9rem;flex-shrink:0;margin-top:.08rem}
+.btn{padding:.58rem 1.3rem;border:none;border-radius:8px;cursor:pointer;font-size:.86rem;font-weight:600;transition:all .2s}
+.btn-p{background:var(--teal);color:#fff}.btn-p:hover{background:var(--teal-d)}
+.btn-row{display:flex;gap:.65rem;flex-wrap:wrap;justify-content:center}
+.sec-divider{font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:.3rem 0 .5rem;padding-left:.2rem}
+</style>
+</head>
+<body>
+<div class="app-header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">CISI — Chapter 1: The Regulatory Environment</div>
+      <div class="app-sub">Sections 1.1 · 1.2 · 1.3 &nbsp;|&nbsp; 10 questions per round &nbsp;|&nbsp; Bank: 61 questions</div>
+    </div>
+    <button class="reset-btn" onclick="doReset()">↺ New round</button>
+  </div>
+</div>
+
+<div class="screen">
+  <div class="round-pill" id="round-label">Round 1 &nbsp;·&nbsp; 10 questions from bank of 61</div>
+  <div class="tracker" id="tracker"></div>
+  <div class="score-bar">
+    <div class="sc"><div class="n" id="s-num">0/10</div><div class="l">Progress</div></div>
+    <div class="sc"><div class="n n-ok" id="s-ok">0</div><div class="l">Correct</div></div>
+    <div class="sc"><div class="n n-bad" id="s-bad">0</div><div class="l">Wrong</div></div>
+    <div class="sc"><div class="n" id="s-pct">—</div><div class="l">Score</div></div>
+  </div>
+  <div id="q-area"></div>
+</div>
+
+<script>
+const BANK=[
+{tag:"cisi",topic:"1.1 FSMA",q:"Which piece of legislation is the primary statute regulating financial services in the United Kingdom?",opts:["Financial Services Act 2012","Financial Services and Markets Act 2000","Banking Act 2009","Financial Services Act 1986"],ans:1,exp:"FSMA 2000 is the primary legislation. It came into force in 2001. The Financial Services Act 2012 significantly amended it but did not replace it."},
+{tag:"cisi",topic:"1.1 FSMA",q:"In which year did the FSA formally split into the FCA and the PRA?",opts:["2000","2010","2012","2013"],ans:3,exp:"The split took effect in April 2013, following the Financial Services Act 2012. The FSA was abolished and replaced by the FCA (conduct) and the PRA (prudential)."},
+{tag:"cisi",topic:"1.1 Structure",q:"The Prudential Regulation Authority (PRA) is a subsidiary of which body?",opts:["HM Treasury","The Financial Conduct Authority","The Bank of England","UK Parliament"],ans:2,exp:"Following the Financial Services Act 2016, the PRA became part of the Bank of England. A new Prudential Regulation Committee (PRC) was established within the Bank."},
+{tag:"cisi",topic:"1.1 Structure",q:"Which regulator is SOLELY responsible for authorising and supervising financial intermediaries and investment exchanges?",opts:["PRA","FPC","Bank of England","FCA"],ans:3,exp:"The FCA is solely responsible for authorising and supervising firms not regulated by the PRA — including all intermediaries and investment exchanges."},
+{tag:"cisi",topic:"1.1 Twin Peaks",q:"The 'twin peaks' model means that a dual-regulated firm such as a bank is supervised by:",opts:["FCA only, for all regulatory purposes","PRA only, because it is a large institution","Both FCA (for conduct) and PRA (for prudential soundness)","The Bank of England directly, bypassing FCA and PRA"],ans:2,exp:"Under twin peaks, dual-regulated firms are supervised by both: PRA for prudential soundness and FCA for conduct towards customers and market integrity."},
+{tag:"cisi",topic:"1.1 FSMA s.19",q:"Under Section 19 of FSMA, what is the consequence of carrying on a regulated activity without authorisation or exempt status?",opts:["A civil fine of up to £50,000","A formal warning notice from the FCA","A criminal offence","Suspension of trading for 90 days"],ans:2,exp:"Section 19 FSMA — the General Prohibition — makes it a criminal offence to carry on regulated activity without authorisation. One of the most tested CISI facts."},
+{tag:"cisi",topic:"1.1 Structure",q:"To which body is the FCA directly accountable for how it carries out its functions?",opts:["The Bank of England","The PRA","HM Treasury","The House of Lords"],ans:2,exp:"The FCA is accountable to the UK Government via HM Treasury. The PRA is accountable to Parliament via the House of Commons Treasury Committee through the Bank of England."},
+{tag:"cisi",topic:"1.1 Structure",q:"What is the primary role of the Financial Policy Committee (FPC)?",opts:["Authorising individual financial advisers","Prudential supervision of insurance companies","Setting conduct standards for retail banks","Identifying and addressing macro-financial risks to the stability of the UK economy"],ans:3,exp:"The FPC is a committee of the Bank of England. It focuses on macroeconomic and financial issues that may threaten the long-term growth prospects of the UK economy."},
+{tag:"cisi",topic:"1.1 PRA",q:"Which of the following types of firm does the PRA prudentially regulate?",opts:["Independent financial advisers and mortgage brokers","Major investment banks, banks, building societies and insurers","Investment exchanges and trading platforms","Solo-regulated asset managers"],ans:1,exp:"The PRA prudentially regulates banks, building societies, credit unions, insurers, and major investment banks — NOT intermediaries or solo-regulated firms."},
+{tag:"cisi",topic:"1.1 FCA",q:"The FCA has powers to investigate and prosecute which of the following?",opts:["Breaches of health and safety legislation","Tax evasion","Insider dealing and market abuse","Breaches of planning regulations"],ans:2,exp:"The FCA has powers to investigate and prosecute insider dealing and market abuse. It also acts as the UK Listing Authority."},
+{tag:"concept",topic:"1.1 Funding",q:"How are both the FCA and the PRA funded?",opts:["By HM Treasury grants from taxation","By the Bank of England's balance sheet","Entirely from fees levied on the firms they regulate","Through fines and penalties collected from regulated firms"],ans:2,exp:"Both regulators are funded entirely by fees paid by regulated firms — ensuring operational independence from government funding."},
+{tag:"cisi",topic:"1.1 FSMA",q:"Which of the following best describes an 'exempt person' under FSMA?",opts:["A firm refused authorisation by the FCA","A person permitted to carry out regulated activities without direct FCA/PRA authorisation","A consumer exempt from FCA consumer protection rules","A firm operating solely outside the UK"],ans:1,exp:"An exempt person is permitted by statute to carry on regulated activities without needing direct authorisation — such as certain appointed representatives."},
+{tag:"scenario",topic:"1.1 FSMA s.19",q:"TradeCo Ltd has operated as a discretionary investment manager for 18 months without FCA authorisation. What is its most serious potential exposure?",opts:["A formal warning letter only","A civil fine of up to £1 million","Criminal prosecution under the General Prohibition (Section 19 FSMA)","Mandatory suspension for 6 months"],ans:2,exp:"Section 19 FSMA — the General Prohibition — makes conducting regulated activity without authorisation a CRIMINAL offence. TradeCo faces criminal prosecution, not merely a civil fine."},
+{tag:"concept",topic:"1.1 Structure",q:"Which of the following is NOT part of the Bank of England family?",opts:["Prudential Regulation Authority","Financial Policy Committee","Prudential Regulation Committee","Financial Conduct Authority"],ans:3,exp:"The FCA is an independent private company — not part of the Bank of England. The PRA, FPC and PRC are all within or closely connected to the Bank of England."},
+{tag:"cisi",topic:"1.1 FCA/PRA",q:"Which body oversees the Financial Ombudsman Service (FOS)?",opts:["PRA","HM Treasury","FCA","Bank of England"],ans:2,exp:"The FCA oversees the FOS. The FCA and PRA jointly oversee the Financial Services Compensation Scheme (FSCS)."},
+{tag:"concept",topic:"1.1 FCA/PRA",q:"For a dual-regulated firm, which statement best describes the split of responsibilities between FCA and PRA?",opts:["FCA handles all supervision; PRA only intervenes in crises","FCA supervises conduct and consumer outcomes; PRA supervises financial soundness and stability","PRA supervises all aspects; FCA only handles complaints","Both regulators have identical responsibilities"],ans:1,exp:"FCA = HOW firms treat customers and behave in markets (conduct). PRA = WHETHER firms are financially sound (prudential). Both apply simultaneously to dual-regulated firms."},
+{tag:"detail",topic:"1.1 FSMA",q:"Under FSMA, 'persons' includes which of the following?",opts:["Only individual human beings","Only incorporated companies","Natural persons, firms, partnerships, trusts and other unincorporated associations","Only UK-resident individuals"],ans:2,exp:"Under FSMA, 'persons' means natural persons AND all other types of legal person: firms, incorporated bodies, partnerships, trusts, and other unincorporated associations."},
+{tag:"detail",topic:"1.1 Structure",q:"Following the Financial Services Act 2016, the PRA became directly accountable to which body?",opts:["HM Treasury","The Financial Conduct Authority","The Bank of England","The House of Commons Treasury Select Committee"],ans:2,exp:"The Financial Services Act 2016 made the PRA part of the Bank of England. The Act established the new Prudential Regulation Committee (PRC) within the Bank."},
+{tag:"scenario",topic:"1.1 Twin Peaks",q:"RegulatorX wrote to ReadyBank plc raising concerns about its capital buffers being too thin. Which regulator is most likely RegulatorX?",opts:["FCA — because it supervises all authorised firms","PRA — because prudential matters like capital adequacy fall within its remit for deposit-takers","FPC — because it monitors system-wide risks","FOS — because thin capital could harm customers"],ans:1,exp:"Capital adequacy is a prudential matter — squarely within the PRA's remit. The PRA prudentially supervises banks, building societies, credit unions, insurers and major investment banks."},
+{tag:"cisi",topic:"1.1 FCA",q:"The FCA acts as the UK Listing Authority. This means it is responsible for:",opts:["Approving the listing of shares and securities on UK stock exchanges","Licensing all stockbrokers operating in the UK","Setting the rules for insurance product listings","Maintaining a list of all exempt persons under FSMA"],ans:0,exp:"The FCA acts as the UK Listing Authority (UKLA), responsible for approving applications for admission of securities to trading and setting the Listing Rules."},
+{tag:"concept",topic:"1.1 FSMA",q:"Which of the following statements about FSMA 2000 is correct?",opts:["It was repealed by the Financial Services Act 2012","It came into force in 1999","It is the primary legislation and came into force in 2001","It only applies to retail consumers, not wholesale markets"],ans:2,exp:"FSMA 2000 is the primary legislation governing UK financial services. It came into force in 2001. The FSA 2012 amended it significantly but FSMA remains the primary statute."},
+{tag:"scenario",topic:"1.1 Structure",q:"A consumer's bank mis-sold her a PPI policy. She wants independent redress without going to court. Which body should she approach?",opts:["The Prudential Regulation Authority","The Financial Ombudsman Service","The Financial Policy Committee","HM Treasury"],ans:1,exp:"The Financial Ombudsman Service (FOS) provides independent dispute resolution for consumers. The FCA oversees the FOS. The PRA, FPC and HM Treasury do not handle individual consumer complaints."},
+{tag:"detail",topic:"1.1 FCA",q:"The FCA was given a special privilege distinguishing it from most private companies. What is it?",opts:["It is exempt from all taxation","It does not need to file accounts with Companies House","It is permitted not to use the word 'limited' as part of its name","It is exempt from judicial review"],ans:2,exp:"The FCA, as a private company, was given the special privilege of not being required to use the word 'limited' in its name — reflecting its unique public interest role."},
+{tag:"detail",topic:"1.1 FPC",q:"The FPC focuses on which type of issues?",opts:["Conduct issues at individual firms","Prudential soundness of specific banks","Macroeconomic and financial issues that may threaten long-term UK economic growth","Consumer complaints and redress"],ans:2,exp:"The FPC focuses on systemic/macro-level risks — macroeconomic and financial issues that may threaten the long-term growth prospects of the UK economy."},
+{tag:"cisi",topic:"1.2 FCA Objectives",q:"How many statutory objectives does the FCA have under the Financial Services Act 2012?",opts:["One strategic and one operational","One strategic and two operational","One strategic and three operational","Two strategic and two operational"],ans:2,exp:"The FCA has one strategic objective (ensuring relevant markets function well) and three operational objectives: consumer protection, integrity, and competition."},
+{tag:"cisi",topic:"1.2 FCA Objectives",q:"What is the FCA's single strategic objective?",opts:["Promoting the safety and soundness of authorised firms","Ensuring that the relevant markets function well","Protecting and enhancing the integrity of the UK financial system","Facilitating effective competition for consumers"],ans:1,exp:"The FCA's strategic objective is ensuring that the relevant markets function well. The three operational objectives sit beneath this strategic goal and give it practical force."},
+{tag:"cisi",topic:"1.2 Consumer Protection",q:"The FCA's consumer protection objective does NOT require the FCA to:",opts:["Consider the differing levels of experience of consumers","Prevent all risk of financial loss to consumers","Have regard to consumers' need for accurate information","Consider that consumers should take some responsibility for their own decisions"],ans:1,exp:"The consumer protection objective does NOT mean preventing all risk of loss. Consumers are expected to take personal responsibility. The FCA targets appropriate — not zero — protection."},
+{tag:"cisi",topic:"1.2 Integrity",q:"Which of the following is included within the FCA's integrity objective?",opts:["Promoting effective competition between service providers","Ensuring markets are not used for financial crime","Minimising the impact of a firm's failure on the financial system","Facilitating international competitiveness of the UK economy"],ans:1,exp:"The integrity objective includes: soundness, stability and resilience; not being used for financial crime; not affected by market abuse; orderly markets; transparent price formation; and suitability of listing rules."},
+{tag:"cisi",topic:"1.2 Competition",q:"Under the FCA's competition objective, which of the following may the FCA have regard to?",opts:["The level of base interest rates","The ease with which new entrants can enter the market","The prudential soundness of competing firms","The solvency ratios of authorised firms"],ans:1,exp:"Under the competition objective, the FCA considers: consumer needs and informed choice; ease of switching providers; ease of new market entry; and how far competition encourages innovation."},
+{tag:"cisi",topic:"1.2 PRA Objectives",q:"What is the single general objective of the PRA?",opts:["Ensuring consumer protection in insurance markets","Promoting the safety and soundness of PRA-authorised persons","Facilitating competition among banks and insurers","Protecting market integrity and preventing systemic risk"],ans:1,exp:"The PRA's single general objective is 'promoting the safety and soundness of PRA-authorised persons' — advanced by avoiding adverse effects on UK financial system stability and minimising firm failure impact."},
+{tag:"cisi",topic:"1.2 PRA Objectives",q:"The PRA has an insurance objective. What does it aim to achieve?",opts:["Setting premium caps for retail insurance products","Contributing to securing appropriate protection for those who are or may become policyholders","Regulating the investment portfolios of insurance companies","Facilitating competition in the insurance market"],ans:1,exp:"The PRA's insurance objective relates to effecting or carrying out contracts of insurance as principal. It contributes to securing appropriate protection for policyholders."},
+{tag:"cisi",topic:"1.2 Secondary Objective",q:"Under the Financial Services and Markets Act 2023, what secondary objective was given to BOTH the FCA and the PRA?",opts:["To reduce the cost of regulation for firms","To facilitate the international competitiveness of the UK economy and its medium to long-term growth","To promote financial inclusion for all UK consumers","To align UK rules with EU regulatory standards"],ans:1,exp:"FSA 2023 gave both regulators a secondary objective: to facilitate the international competitiveness of the UK economy and its medium to long-term growth, subject to international standards."},
+{tag:"cisi",topic:"1.2 Secondary Objective",q:"When does the FCA's secondary competitiveness objective apply?",opts:["At all times — it is now the FCA's primary consideration","Only when there is a specific government direction","Only when the FCA is already advancing its existing operational objectives","Only in relation to wholesale market regulation"],ans:2,exp:"The FCA stated the secondary objective only applies when it is already advancing its existing operational objectives — consumer protection, market integrity, and effective competition."},
+{tag:"cisi",topic:"1.2 Accountability",q:"Which of the following is one of the four mechanisms of FCA accountability?",opts:["The FCA must seek approval from the Bank of England before publishing rules","Parliamentary committees scrutinise the FCA's annual report to the Treasury","The FCA's board is appointed directly by HM Treasury","The FCA must publish monthly reports on regulatory failures"],ans:1,exp:"Four accountability mechanisms: (1) annual report scrutinised by Parliament, (2) rules must link to objectives, (3) judicial review, (4) regulatory failure liability."},
+{tag:"cisi",topic:"1.2 Accountability",q:"If the FCA fails to consider its statutory objectives when making rules, what remedy is available?",opts:["The PRA can override the FCA's rules","HM Treasury can suspend the FCA","Judicial review in the courts","A firm can simply disregard the rules"],ans:2,exp:"Judicial review is available if the FCA fails to consider its objectives or incorrectly interprets them. One of the four accountability mechanisms."},
+{tag:"cisi",topic:"1.2.1 Supervision",q:"The FCA's 'outcomes-focused intensive' supervisory model has two key features. Which answer correctly states both?",opts:["Random sampling of transactions and annual firm visits","Enhanced risk and business model analysis, plus outcome testing rather than just systems checking","Quarterly reporting requirements and rule-following checklists","Mystery shopping only, plus retrospective complaints review"],ans:1,exp:"Feature 1: Enhanced analysis and risk identification (business model analysis, mystery shopping, horizon scanning). Feature 2: Outcome testing — not just checking systems exist, but whether customers received fair outcomes."},
+{tag:"cisi",topic:"1.2.1 Supervision",q:"Before the FCA took over conduct regulation, the FSA's approach was often called:",opts:["Intensive supervision","Zero tolerance","Light touch","Rules-based"],ans:2,exp:"The FSA's approach was 'light touch' — it would not intervene until something went wrong. This was widely accepted but criticised following the 2007-08 financial crisis."},
+{tag:"cisi",topic:"1.2.2 Risk-Based",q:"What does the FCA's risk-based supervisory approach mean in practice?",opts:["All firms receive the same level of supervisory attention","Supervisory attention is proportional to the risk each firm poses to the FCA's objectives","Only large firms are supervised","Supervision is only triggered by consumer complaints"],ans:1,exp:"The FCA assesses each firm for the risk it poses to its objectives, then determines the degree and level of supervisory attention required for that specific firm."},
+{tag:"cisi",topic:"1.2.2 Risk-Based",q:"The FCA's supervisory model is based on three types of work. Which answer correctly lists all three?",opts:["Proactive, reactive and thematic","Annual, quarterly and ad hoc","Rule-based, principles-based and outcomes-based","Preventative, investigative and punitive"],ans:0,exp:"Three types: Proactive (pre-emptive harm identification), Reactive (dealing with emerging/existing issues), Thematic (diagnostic or remedy work across multiple firms where harm exists or may exist)."},
+{tag:"cisi",topic:"1.2.3 Conduct Risk",q:"Which of the following best describes 'conduct risk' in the FCA's regulatory framework?",opts:["The risk that a firm will become insolvent","The risk of poor outcomes for customers and damage to market integrity caused by firm behaviour","The risk that a firm will breach its capital requirements","The risk that interest rates will adversely affect a firm's portfolio"],ans:1,exp:"Conduct risk = the risks posed to customers and market integrity by the way authorised firms and their staff behave, and how that behaviour may result in poor outcomes for consumers."},
+{tag:"cisi",topic:"1.2.3 TCF/FTOC",q:"TCF (Treating Customers Fairly) was introduced in which year?",opts:["2000","2003","2006","2013"],ans:2,exp:"The concept of Treating Customers Fairly (TCF) and its '6 principles' were introduced in 2006. They continue to be a key element of the regulatory architecture."},
+{tag:"cisi",topic:"1.2.3 TCF/FTOC",q:"TCF has since been renamed. What does FTOC stand for?",opts:["Financial Treatment of Consumer Operations","Fair Terms of Consumer Contracts","Fair Treatment of Customers","Financial Testing of Consumer Outcomes"],ans:2,exp:"TCF was renamed FTOC — Fair Treatment of Customers. FTOC sets out the six consumer outcomes the FCA considers core to what it expects of firms."},
+{tag:"concept",topic:"1.2 PRA Supervision",q:"The PRA's supervisory approach follows three principles. Which answer correctly states all three?",opts:["Rules-based, reactive and firm-specific","Judgement-based, forward-looking and focused on key risks","Prescriptive, retrospective and sector-wide","Proactive, thematic and outcome-focused"],ans:1,exp:"PRA's three principles: (1) Judgement-based; (2) Forward-looking — assesses current AND future risks via horizon scanning; (3) Key risk focus — systemic and threshold condition risks."},
+{tag:"cisi",topic:"1.2 PRA Risk Framework",q:"In the PRA's risk framework, what is 'net risk'?",opts:["The total financial exposure of a firm to market fluctuations","Gross risk minus the mitigating factors applied by the firm itself","The residual risk after PRA supervisory intervention","The risk to consumers after FCA oversight is applied"],ans:1,exp:"Net risk = Gross risk (firm's potential impact on system + business model risk) MINUS Mitigating factors (the firm's own actions to offset gross risk). Net risk drives the level of PRA supervisory attention."},
+{tag:"concept",topic:"1.2 PRA Risk Framework",q:"What does the PRA measure as 'gross risk'?",opts:["The net financial loss a firm would suffer in a stress scenario","The potential impact a firm has on system stability plus the external context and business model risk it faces","The total value of assets held by a firm","The number of regulatory breaches a firm has committed"],ans:1,exp:"Gross risk = potential impact on UK financial system stability + external context + business model risk. This is then overlaid with mitigating factors to produce net risk."},
+{tag:"scenario",topic:"1.2 Consumer Protection",q:"An adviser tells a client: 'The FCA's consumer protection objective means you can never lose money on a regulated investment.' Is this correct?",opts:["Yes — the FCA's objective eliminates all investment risk","No — it secures an appropriate degree of protection, not elimination of all risk","Yes — FSMA guarantees all retail investors against loss","No — consumer protection is handled by the PRA"],ans:1,exp:"The consumer protection objective does NOT mean preventing all risk of loss. Consumers are expected to take personal responsibility. The FCA targets appropriate — not zero — protection."},
+{tag:"scenario",topic:"1.2 Secondary Objective",q:"An FCA official argues: 'We should weaken consumer protection rules to attract global firms.' Under FSA 2023, is this correct?",opts:["Yes — competitiveness is now the FCA's top priority","No — the secondary objective only applies when primary objectives are already being met and cannot override consumer protection","Yes — competitiveness overrides consumer protection in wholesale markets","No — the secondary objective only applies to the PRA"],ans:1,exp:"The secondary objective ONLY applies when primary objectives are already being advanced. Weakening consumer protection to boost competitiveness directly conflicts with primary objectives."},
+{tag:"detail",topic:"1.2 Secondary Objective",q:"What does 'international standards' mean in the context of the FCA's secondary competitiveness objective?",opts:["The FCA must align all rules with EU directives","The FCA will not take action or develop rules that would harm the UK's reputation or standing in the international financial community","The FCA must consult international bodies before making rules","UK firms must meet the highest global standards at all times"],ans:1,exp:"'International standards' means the FCA will not take action or develop rules that would harm the UK's reputation or standing in the international financial community."},
+{tag:"concept",topic:"1.2.1 Supervision",q:"What triggered the shift from 'light touch' regulation to the FCA's intensive supervisory model?",opts:["The Brexit referendum in 2016","The global financial crisis of 2007-08","The introduction of MiFID II in 2018","The collapse of Barings Bank"],ans:1,exp:"The global financial crisis of 2007-08 identified serious issues with culture and business practices across financial services. It showed 'light touch' was insufficient."},
+{tag:"concept",topic:"1.2.3 Conduct Risk",q:"Conduct Risk expands on TCF by requiring firms to consider which additional question?",opts:["Whether the firm has adequate capital reserves","Whether the WAY the firm does business causes poor outcomes for customers or harms market integrity","Whether senior managers have appropriate qualifications","Whether the firm has sufficient technology infrastructure"],ans:1,exp:"Conduct Risk requires firms to consider whether the WAY they do business — not just their products and procedures — causes poor outcomes for customers or harms market integrity."},
+{tag:"concept",topic:"1.2 FCA Governance",q:"The FCA's new supervisory approach involves scrutinising senior management competence. What does this require the FCA to do?",opts:["Approve all board-level appointments at regulated firms","Make judgements about technical competence and governance ability that, at times, will be at variance with those of the firms","Attend all board meetings of dual-regulated firms","Set minimum qualification requirements for all directors"],ans:1,exp:"The FCA assesses both technical competence and ability to contribute to effective governance. This requires FCA supervisors to make judgements that, at times, will be at variance with the firms' own views."},
+{tag:"cisi",topic:"1.3 Rule-Making",q:"Which part of FSMA empowers the FCA to make rules that are legally binding on authorised firms?",opts:["Part 4A","Part 9A","Part 11","Part 18"],ans:1,exp:"Part 9A of FSMA empowers the FCA to make rules that are legally binding on authorised firms concerning regulated activity and also activity that is not regulated."},
+{tag:"cisi",topic:"1.3 Rule-Making",q:"For what purpose may the FCA make rules under Part 9A of FSMA?",opts:["For any purpose the FCA considers appropriate","For the purpose of advancing one or more of its operational objectives","Solely for the purpose of protecting consumers from financial loss","For the purpose of implementing EU directives only"],ans:1,exp:"Under Part 9A FSMA, FCA rules must be necessary or expedient for the purpose of advancing one or more of its operational objectives (consumer protection, integrity, or competition)."},
+{tag:"cisi",topic:"1.3 Rule-Making",q:"Does the PRA have rule-making powers similar to the FCA?",opts:["No — only the FCA can make binding rules","Yes — but the PRA's rule-making powers only extend to PRA-authorised persons","Yes — and the PRA's rules apply to all authorised persons in the UK","No — the PRA can only issue guidance, not binding rules"],ans:1,exp:"The PRA has similar rule-making powers to the FCA; however, the PRA's powers only extend to PRA-authorised persons (banks, insurers, etc.) rather than all authorised firms."},
+{tag:"cisi",topic:"1.3 Powers",q:"In addition to rule-making powers, FSMA empowers regulators to grant, vary and cancel authorisation. What is the relevant permission called?",opts:["Regulatory permission","Part 4A permission","Full authorisation licence","Approved person status"],ans:1,exp:"FSMA empowers either regulator to grant authorisation to persons applying for Part 4A permission, vary a firm's permission, and cancel authorisation."},
+{tag:"cisi",topic:"1.3 Powers",q:"Under FSMA, what is the overall enforcement approach described as?",opts:["Zero tolerance enforcement","Credible deterrence — using enforcement strategy as a tool to change behaviour in the industry","Reactive enforcement triggered only by consumer complaints","Proportionate fines based solely on firm size"],ans:1,exp:"The general enforcement approach is credible deterrence — using enforcement strategy as a tool to change behaviour in the industry, not just to punish individual breaches."},
+{tag:"detail",topic:"1.3 Powers",q:"Beyond making rules, FSMA empowers regulators to carry out which of the following activities?",opts:["Setting monetary policy for the UK","Supervising authorised persons on an ongoing basis to ensure continuing compliance with Handbook rules","Approving government bonds for issue","Setting accounting standards for regulated firms"],ans:1,exp:"Beyond rule-making, FSMA empowers regulators to: supervise authorised persons on an ongoing basis; employ disciplinary measures and sanctions; enforce the regulatory framework; and grant, vary or cancel Part 4A permissions."},
+];
+
+const SK='cisi_ch1_v3';
+const N=10;
+let APP={round:[],answers:{},opts:{},seen:[],roundNum:0};
+
+function save(){try{localStorage.setItem(SK,JSON.stringify(APP));}catch(e){}}
+function load(){try{const d=localStorage.getItem(SK);if(d)APP=JSON.parse(d);}catch(e){}}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function buildRound(){
+  const lastWrong=Object.entries(APP.answers)
+    .filter(([,v])=>v&&v.v===0)
+    .map(([k])=>APP.round[parseInt(k)])
+    .filter(x=>x!==undefined);
+  const unseen=BANK.map((_,i)=>i).filter(i=>!APP.seen.includes(i));
+  const seenOld=APP.seen.filter(i=>!APP.round.includes(i));
+  let cands=[];
+  cands.push(...shuffle(lastWrong).slice(0,3));
+  cands.push(...shuffle(unseen.filter(i=>!cands.includes(i))).slice(0,N-cands.length));
+  if(cands.length<N) cands.push(...shuffle(seenOld.filter(i=>!cands.includes(i))).slice(0,N-cands.length));
+  if(cands.length<N) cands.push(...shuffle(BANK.map((_,i)=>i).filter(i=>!cands.includes(i))).slice(0,N-cands.length));
+  const round=shuffle(cands).slice(0,N);
+  round.forEach(i=>{if(!APP.seen.includes(i))APP.seen.push(i);});
+  APP.round=round; APP.answers={}; APP.opts={}; APP.roundNum=(APP.roundNum||0)+1;
+}
+
+function doReset(){buildRound();save();render();window.scrollTo({top:0,behavior:'smooth'});}
+
+function pick(pos,oi){
+  if(APP.answers[pos]) return;
+  const q=BANK[APP.round[pos]];
+  APP.answers[pos]={opt:q.opts[oi],v:oi===q.ans?1:0};
+  save(); render();
+  setTimeout(()=>{
+    const done=Object.keys(APP.answers).length;
+    if(done<N){
+      const cards=document.querySelectorAll('#q-area .q-card');
+      const next=[...Array(N).keys()].find(j=>j>pos&&!APP.answers[j]);
+      if(next!==undefined) cards[next]?.scrollIntoView({behavior:'smooth',block:'center'});
+    } else {
+      document.querySelector('#q-area .result-card')?.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  },350);
+}
+
+function render(){
+  const done=Object.keys(APP.answers).length;
+  const ok=Object.values(APP.answers).filter(v=>v&&v.v===1).length;
+  const bad=done-ok;
+  const pct=done?Math.round(ok/done*100):null;
+  document.getElementById('round-label').textContent=
+    `Round ${APP.roundNum} \u00b7 10 questions from bank of ${BANK.length} \u00b7 Seen: ${APP.seen.length}/${BANK.length}`;
+  document.getElementById('s-num').textContent=`${done}/${N}`;
+  document.getElementById('s-ok').textContent=ok;
+  document.getElementById('s-bad').textContent=bad;
+  document.getElementById('s-pct').textContent=pct===null?'\u2014':pct+'%';
+
+  // tracker
+  const tr=document.getElementById('tracker');
+  tr.innerHTML='';
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');
+    d.className='tracker-dot'+(APP.answers[i]?APP.answers[i].v===1?' t-ok':' t-bad':i===done?' t-cur':'');
+    tr.appendChild(d);
+  }
+
+  const area=document.getElementById('q-area');
+  area.innerHTML='';
+  const L=['A','B','C','D'];
+  const tmap={cisi:'CISI exam',concept:'Concept',scenario:'Scenario',detail:'Detail'};
+  const tcls={cisi:'tag-cisi',concept:'tag-concept',scenario:'tag-scenario',detail:'tag-detail'};
+
+  APP.round.forEach((qi,pos)=>{
+    const q=BANK[qi];
+    const answered=!!APP.answers[pos];
+    const chosen=APP.answers[pos]?.opt;
+    if(!APP.opts[pos]) APP.opts[pos]=shuffle(q.opts.map((_,i)=>i));
+    const oo=APP.opts[pos];
+    let optsHtml=oo.map((oi,li)=>{
+      let c='opt';
+      if(answered) c+=' dis';
+      if(answered&&oi===q.ans) c+=' ok';
+      else if(answered&&q.opts[oi]===chosen&&oi!==q.ans) c+=' bad';
+      return `<div class="${c}" onclick="pick(${pos},${oi})"><span class="opt-l">${L[li]}</span><span>${q.opts[oi]}</span></div>`;
+    }).join('');
+    let expHtml=answered?`<div class="exp-box show ${APP.answers[pos].v===1?'exp-ok':'exp-bad'}"><strong>${APP.answers[pos].v===1?'Correct!':'Incorrect.'}</strong> ${q.exp}</div>`:'';
+    const card=document.createElement('div');
+    card.className='q-card';
+    card.innerHTML=`<div class="q-meta"><span class="q-num">Q${pos+1}</span><span class="q-tag ${tcls[q.tag]}">${tmap[q.tag]}</span><span class="q-topic">${q.topic}</span></div><div class="q-text">${q.q}</div><div class="opts">${optsHtml}</div>${expHtml}`;
+    area.appendChild(card);
+  });
+
+  if(done===N){
+    const pF=Math.round(ok/N*100);
+    let lbl,col,grade;
+    if(pF>=80){lbl='Pass standard met!';col='var(--teal-m)';grade='Pass \u2713';}
+    else if(pF>=70){lbl='Close to pass standard — review weaker areas.';col='var(--amber)';grade='Near Pass';}
+    else if(pF>=60){lbl='Borderline — further study recommended.';col='var(--coral-m)';grade='Borderline';}
+    else{lbl='Below pass standard — keep practising.';col='#A32D2D';grade='Needs Work';}
+
+    // topic breakdown
+    const ts={};
+    APP.round.forEach((qi,pos)=>{
+      const t=BANK[qi].topic;
+      if(!ts[t]) ts[t]={ok:0,tot:0};
+      ts[t].tot++;
+      if(APP.answers[pos]?.v===1) ts[t].ok++;
+    });
+    let topicHtml=Object.entries(ts).map(([t,s])=>{
+      const tp=Math.round(s.ok/s.tot*100);
+      const c=tp>=80?'var(--teal-m)':tp>=60?'var(--amber)':'var(--coral-m)';
+      return `<div class="topic-row"><div class="topic-name">${t}</div><div style="font-size:.72rem;color:var(--text3);margin-bottom:.25rem">${s.ok}/${s.tot}</div><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:${tp}%;background:${c}"></div></div></div>`;
+    }).join('');
+
+    let reviewHtml=APP.round.map((qi,pos)=>{
+      const q=BANK[qi]; const v=APP.answers[pos]?.v===1;
+      return `<div class="q-review-item ${v?'r-ok':'r-bad'}"><span class="r-icon">${v?'\u2713':'\u2717'}</span><div><strong>Q${pos+1} \u00b7 ${q.topic}.</strong> ${q.q}<br><span style="font-size:.78rem;opacity:.85">Answer: ${q.opts[q.ans]}</span></div></div>`;
+    }).join('');
+
+    const rc=document.createElement('div');
+    rc.className='result-card';
+    rc.style.marginTop='1rem';
+    rc.innerHTML=`
+      <div style="font-size:.85rem;color:var(--text2);margin-bottom:.3rem">Round ${APP.roundNum} complete</div>
+      <div class="result-big" style="color:${col}">${ok}/${N}</div>
+      <div class="result-grade" style="background:${col}22;color:${col}">${grade}</div>
+      <div class="result-bar-wrap"><div class="result-bar-fill" style="width:${pF}%;background:${col}"></div></div>
+      <div style="font-size:.82rem;color:var(--text2);margin:.3rem 0 .2rem">${pF}% correct \u00b7 ${lbl}</div>
+      <div class="result-breakdown">
+        <span class="rp" style="background:var(--green-l);color:var(--green)">\u2713 Correct: ${ok}</span>
+        <span class="rp" style="background:var(--coral-l);color:var(--coral)">\u2717 Wrong: ${N-ok}</span>
+        <span class="rp" style="background:var(--navy-l);color:var(--navy-d)">Seen: ${APP.seen.length}/${BANK.length}</span>
+      </div>
+      <div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.55rem;text-align:left">Performance by topic:</div>
+      <div class="topic-grid">${topicHtml}</div>
+      <div class="btn-row" style="margin-bottom:1.4rem"><button class="btn btn-p" onclick="doReset()">\u21ba New round (smart shuffle)</button></div>
+      <div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.5rem;text-align:left">Question review:</div>
+      <div class="q-review-list">${reviewHtml}</div>`;
+    area.appendChild(rc);
+  }
+}
+
+load();
+if(!APP.round||APP.round.length===0) buildRound();
+render();
+</script>
+</body>
+</html>

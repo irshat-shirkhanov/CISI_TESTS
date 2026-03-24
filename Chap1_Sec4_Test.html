@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CISI Chapter 4 — Practice Test</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1E2761;--navy-l:#CADCFC;--navy-d:#12195F;
+  --teal:#028090;--teal-l:#D6F0F3;--teal-d:#015E6A;--teal-m:#1D9E75;
+  --amber:#B07D12;--amber-l:#FEF3C7;--amber-d:#7C5A0A;
+  --coral:#993C1D;--coral-l:#FAECE7;--coral-m:#D85A30;
+  --purple:#534AB7;--purple-l:#EEEDFE;--purple-d:#3C3489;
+  --green-l:#E1F5EE;--green:#085041;
+  --gray:#64748B;--gray-l:#F1F5F9;--gray-m:#CBD5E1;--gray-d:#334155;
+  --bg:#F0F4F8;--card:#fff;--text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --radius:12px;--shadow:0 2px 10px rgba(0,0,0,.09);
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app-header{background:linear-gradient(135deg,var(--navy),var(--teal));padding:1.2rem 1.5rem .85rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.app-title{color:#fff;font-size:1.08rem;font-weight:700;line-height:1.3}
+.app-sub{color:var(--navy-l);font-size:.72rem;margin-top:.18rem}
+.reset-btn{background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.38);color:#fff;border-radius:7px;padding:.36rem .95rem;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.reset-btn:hover{background:rgba(255,255,255,.3)}
+.screen{padding:1.4rem;max-width:820px;margin:0 auto}
+.round-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--navy);color:var(--navy-l);border-radius:7px;padding:.3rem .85rem;font-size:.73rem;font-weight:600;margin-bottom:1rem}
+.tracker{display:flex;gap:3px;margin-bottom:1.05rem}
+.tracker-dot{flex:1;height:10px;border-radius:5px;background:var(--gray-m);transition:background .3s}
+.tracker-dot.t-ok{background:var(--teal-m)}.tracker-dot.t-bad{background:var(--coral-m)}.tracker-dot.t-cur{background:var(--navy-l)}
+.score-bar{display:flex;gap:.65rem;margin-bottom:1rem}
+.sc{flex:1;background:var(--card);border-radius:10px;padding:.58rem .75rem;text-align:center;border:1px solid var(--gray-m);box-shadow:var(--shadow)}
+.sc .n{font-size:1.38rem;font-weight:700;color:var(--teal);line-height:1}
+.sc .n-ok{color:var(--teal-m)}.sc .n-bad{color:var(--coral-m)}
+.sc .l{font-size:.67rem;color:var(--text3);margin-top:.18rem}
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.4rem 1.5rem;margin-bottom:1rem;border:1px solid rgba(0,0,0,.05)}
+.q-meta{display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem;flex-wrap:wrap}
+.q-num{font-size:.68rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.07em}
+.q-tag{font-size:.64rem;font-weight:700;padding:.15rem .48rem;border-radius:20px}
+.tag-cisi{background:#FEF3C7;color:#7C5A0A}.tag-concept{background:var(--purple-l);color:var(--purple-d)}
+.tag-scenario{background:var(--teal-l);color:var(--teal-d)}.tag-detail{background:var(--gray-l);color:var(--gray-d)}
+.q-topic{font-size:.64rem;color:var(--text3);margin-left:auto}
+.q-text{font-size:.93rem;font-weight:500;line-height:1.6;margin-bottom:.95rem;color:var(--text)}
+.opts{display:flex;flex-direction:column;gap:.42rem}
+.opt{display:flex;align-items:flex-start;gap:.65rem;padding:.68rem .95rem;border-radius:8px;border:1.5px solid var(--gray-m);cursor:pointer;font-size:.86rem;line-height:1.46;background:var(--card);transition:all .16s}
+.opt:hover:not(.dis){border-color:var(--teal);background:var(--teal-l)}
+.opt.ok{border-color:var(--teal-m);background:var(--green-l);color:var(--green)}
+.opt.bad{border-color:var(--coral-m);background:var(--coral-l);color:var(--coral)}
+.opt.dis{cursor:default}
+.opt-l{width:21px;height:21px;min-width:21px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:.69rem;font-weight:700;color:var(--gray);margin-top:1px;flex-shrink:0}
+.opt.ok .opt-l{background:var(--teal-m);color:#fff}.opt.bad .opt-l{background:var(--coral-m);color:#fff}
+.exp-box{margin-top:.8rem;padding:.7rem 1rem;border-radius:8px;font-size:.81rem;line-height:1.62;display:none}
+.exp-box.show{display:block}
+.exp-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.exp-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.result-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem 1.5rem;text-align:center;margin-top:.5rem}
+.result-big{font-size:3.2rem;font-weight:800;margin:.4rem 0}
+.result-grade{display:inline-block;padding:.38rem 1.2rem;border-radius:20px;font-size:.92rem;font-weight:700;margin:.5rem 0 .8rem}
+.result-bar-wrap{background:var(--gray-l);border-radius:20px;height:14px;overflow:hidden;margin:.75rem auto;max-width:320px}
+.result-bar-fill{height:100%;border-radius:20px;transition:width .8s ease}
+.result-breakdown{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 1.2rem}
+.rp{padding:.3rem .9rem;border-radius:20px;font-size:.8rem;font-weight:600}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin:.5rem 0 1.2rem;text-align:left}
+.topic-row{background:var(--gray-l);border-radius:8px;padding:.5rem .75rem;font-size:.78rem}
+.topic-name{color:var(--text2);font-weight:600;margin-bottom:.2rem}
+.topic-bar-wrap{background:var(--gray-m);border-radius:10px;height:6px;overflow:hidden}
+.topic-bar-fill{height:100%;border-radius:10px}
+.q-review-list{text-align:left;margin-top:.5rem}
+.q-review-item{padding:.65rem 1rem;border-radius:8px;margin-bottom:.45rem;font-size:.83rem;line-height:1.52;display:flex;gap:.65rem;align-items:flex-start}
+.q-review-item.r-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.q-review-item.r-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.r-icon{font-size:.9rem;flex-shrink:0;margin-top:.08rem}
+.btn{padding:.58rem 1.3rem;border:none;border-radius:8px;cursor:pointer;font-size:.86rem;font-weight:600;transition:all .2s}
+.btn-p{background:var(--teal);color:#fff}.btn-p:hover{background:var(--teal-d)}
+.btn-row{display:flex;gap:.65rem;flex-wrap:wrap;justify-content:center}
+</style>
+</head>
+<body>
+<div class="app-header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">CISI — Chapter 4: Prudential Standards</div>
+      <div class="app-sub">Section 4.1 Capital Adequacy &nbsp;|&nbsp; 10 questions per round &nbsp;|&nbsp; Bank: 34 questions</div>
+    </div>
+    <button class="reset-btn" onclick="doReset()">&#8635; New round</button>
+  </div>
+</div>
+<div class="screen">
+  <div class="round-pill" id="round-label">Round 1 &middot; 10 questions from bank of 35</div>
+  <div class="tracker" id="tracker"></div>
+  <div class="score-bar">
+    <div class="sc"><div class="n" id="s-num">0/10</div><div class="l">Progress</div></div>
+    <div class="sc"><div class="n n-ok" id="s-ok">0</div><div class="l">Correct</div></div>
+    <div class="sc"><div class="n n-bad" id="s-bad">0</div><div class="l">Wrong</div></div>
+    <div class="sc"><div class="n" id="s-pct">&mdash;</div><div class="l">Score</div></div>
+  </div>
+  <div id="q-area"></div>
+</div>
+<script>
+const BANK=[
+{tag:"cisi",topic:"4.1 Capital Adequacy",
+q:"Which FCA Principle establishes that 'a firm must maintain adequate financial resources'?",
+opts:["Principle 3 — Management and control","Principle 4 — Financial prudence","Principle 5 — Market conduct","Principle 7 — Communications with clients"],
+ans:1,exp:"Principle 4 — Financial prudence — establishes that a firm must maintain adequate financial resources. Financial resources include both capital resources and liquidity resources."},
+
+{tag:"cisi",topic:"4.1 Capital Adequacy",
+q:"What do 'financial resources' include under Principle 4?",
+opts:["Capital resources only","Liquidity resources only","Both capital resources and liquidity resources, so that the firm can meet its liabilities as they fall due","Equity capital and retained earnings only"],
+ans:2,exp:"Financial resources include both capital resources and liquidity resources, so that the firm can meet its liabilities as they fall due."},
+
+{tag:"cisi",topic:"4.1 Sourcebooks",
+q:"Which of the following correctly describes the GENPRU sourcebook?",
+opts:["Prudential rules for MiFID investment firms effective from 2022","Capital adequacy rules for firms NOT subject to CRD/CRR","High-level standards, principles and capital adequacy requirements for firms subject to the UK Capital Requirements Directive","Rules for personal investment firms operating under MiFID exemptions"],
+ans:2,exp:"GENPRU (General Prudential Sourcebook) provides high-level standards, principles and capital adequacy requirements for firms subject to the UK Capital Requirements Directive (UK CRD)."},
+
+{tag:"cisi",topic:"4.1 Sourcebooks",
+q:"The MIFIDPRU sourcebook applies to which type of firm?",
+opts:["Banks and credit institutions regulated by the PRA","UK-regulated firms subject to MiFID that are not banks or credit institutions","All investment firms regardless of MiFID status","Firms subject to the IPRU-INV sourcebook only"],
+ans:1,exp:"MIFIDPRU (Prudential Sourcebook for UK MiFID Investment Firms) applies to UK-regulated firms which are subject to MiFID — ie, they are not banks or credit institutions. It came into effect on 1 January 2022."},
+
+{tag:"cisi",topic:"4.1 Sourcebooks",
+q:"Which sourcebook provides capital adequacy rules for investment firms that are NOT subject to CRD/CRR or to MIFIDPRU?",
+opts:["GENPRU","MIFIDPRU","IPRU-INV","SYSC"],
+ans:2,exp:"IPRU-INV (Interim Prudential Sourcebook for Investment Businesses) provides capital adequacy rules for investment firms which are not subject to the CRD/CRR, or subject to the MIFIDPRU sourcebook."},
+
+{tag:"cisi",topic:"4.1 CRD/CRR",
+q:"The Capital Requirements Directive (CRD) and Capital Requirements Regulations (CRR) apply to which type of institution?",
+opts:["All FCA-authorised investment firms","Credit institutions (banks and deposit-taking institutions), managed by the PRA","Only firms subject to MiFID","Solo-regulated investment firms only"],
+ans:1,exp:"The CRD and CRR apply to credit institutions (banks/deposit-taking institutions) and are managed by the PRA. The framework was retained following Brexit."},
+
+{tag:"cisi",topic:"4.1 CRD/CRR",
+q:"What was the purpose of the CRD and CRR framework?",
+opts:["To regulate investment advice for retail clients","To set conduct standards for financial advisers","To create a common framework for financial resources and risk management to minimise the risk of a firm's financial failure","To establish licensing requirements for banks"],
+ans:2,exp:"The CRD and CRR created a common framework for financial resources and risk management to minimise the risk of a firm's financial failure."},
+
+{tag:"cisi",topic:"4.1 Three Pillars",
+q:"Which of the following correctly describes the Three Pillars of the CRD framework?",
+opts:["Pillar 1: governance; Pillar 2: conduct; Pillar 3: reporting","Pillar 1: minimum capital requirements; Pillar 2: additional capital decisions; Pillar 3: disclosure","Pillar 1: liquidity; Pillar 2: capital; Pillar 3: leverage","Pillar 1: credit risk; Pillar 2: market risk; Pillar 3: operational risk"],
+ans:1,exp:"Pillar 1: minimum capital requirements for credit, market and operational risks. Pillar 2: firms and supervisors decide whether additional capital should be held for risks not in Pillar 1. Pillar 3: disclosure of information about risks, capital and risk management to improve market discipline."},
+
+{tag:"cisi",topic:"4.1 Three Pillars",
+q:"What is the purpose of Pillar 3 in the CRD framework?",
+opts:["To set minimum capital requirements","To allow firms to hold additional capital for uncovered risks","Disclosure of information about risks, capital and risk management to improve market discipline","To supervise credit institutions on behalf of the PRA"],
+ans:2,exp:"Pillar 3 requires disclosure of information about risks, capital and risk management to improve market discipline. It complements Pillars 1 and 2 through transparency."},
+
+{tag:"cisi",topic:"4.1 Three Pillars",
+q:"What does Pillar 2 of the CRD framework involve?",
+opts:["Setting minimum capital requirements for all firms","Firms and supervisors deciding whether additional capital should be held to cover risks not covered in Pillar 1","Publishing annual reports on capital adequacy","Setting the risk weightings for different asset classes"],
+ans:1,exp:"Pillar 2: firms and supervisors decide whether additional capital should be held to cover risks not covered in Pillar 1. This is a supervisory review process — more tailored than Pillar 1."},
+
+{tag:"cisi",topic:"4.1 Reporting",
+q:"What must a firm do if it becomes aware that its capital resources have fallen below the prescribed minimum?",
+opts:["Submit a quarterly report at the next reporting cycle","Notify its regulator (PRA) immediately","Notify the FCA within 5 business days","Convene a board meeting within 14 days"],
+ans:1,exp:"If at any time a firm knows that its capital resources have fallen below the prescribed minimum, it must notify its regulator (PRA) immediately. Immediate notification is required — not deferred to the next reporting cycle."},
+
+{tag:"cisi",topic:"4.1 Capital Tiers",
+q:"Which of the following is an example of Core Tier 1 capital?",
+opts:["Long-term subordinated debt","Short-term subordinated debt","Interim trading book profit","Permanent share capital, reserves, and externally verified interim profits"],
+ans:3,exp:"Core Tier 1 capital includes permanent share capital, reserves and externally verified interim profits. It is the highest quality capital — first to absorb losses."},
+
+{tag:"cisi",topic:"4.1 Capital Tiers",
+q:"Which tier of capital includes long-term subordinated debt and revaluations reserves?",
+opts:["Core Tier 1","Tier 2","Tier 3","All tiers equally"],
+ans:1,exp:"Tier 2 capital includes long-term subordinated debt and revaluations reserves. It is lower quality than Core Tier 1 capital."},
+
+{tag:"cisi",topic:"4.1 Capital Tiers",
+q:"What is the significance of capital 'tiers' under UK CRD requirements?",
+opts:["They determine which regulator supervises the firm","They relate to the quality and loss absorbency of the capital instruments a firm uses to meet its capital resource requirements","They set the minimum amount of capital required for each firm type","They determine the frequency of capital adequacy reporting"],
+ans:1,exp:"Firms subject to UK CRD must comply with provisions relating to the quality of capital held. The tiers reflect the loss absorbency of instruments — Core Tier 1 is highest quality (first to absorb losses), Tier 3 is lowest quality."},
+
+{tag:"cisi",topic:"4.1 Capital Tiers",
+q:"Tier 3 capital includes which of the following?",
+opts:["Permanent share capital and reserves","Long-term subordinated debt","Short-term subordinated debt and interim trading book profit and loss","Externally verified interim profits"],
+ans:2,exp:"Tier 3 capital includes short-term subordinated debt and interim trading book profit and loss. It is the lowest quality tier with the most limited recognition."},
+
+{tag:"cisi",topic:"4.1 IPRU-INV",
+q:"Which of the following firms would be subject to the IPRU-INV sourcebook?",
+opts:["A bank regulated by the PRA under CRD","A MiFID investment firm subject to MIFIDPRU","A fund manager including operators of personal pension schemes and SIPP operators","A credit institution subject to UK CRR"],
+ans:2,exp:"Fund managers, including operators of personal pension schemes and SIPP operators, are subject to IPRU-INV. Banks (PRA/CRD) and MiFID firms (MIFIDPRU) are not subject to IPRU-INV."},
+
+{tag:"cisi",topic:"4.1 IPRU-INV",
+q:"Which two overarching requirements must ALL firms subject to IPRU-INV comply with?",
+opts:["File quarterly capital reports; obtain FCA pre-approval for capital changes","Maintain available financial resources as required by the regulator's rules at all times; notify the regulator immediately if in breach (or expecting breach) of financial resources rules","Hold a minimum of Tier 1 capital equal to 8% of risk-weighted assets; publish annual capital statements","Maintain a capital buffer of 10% above the minimum; notify PRA within 7 days of any breach"],
+ans:1,exp:"All IPRU-INV firms must: (1) at all times have available the amount and type of financial resources required by the regulator's rules; and (2) notify the relevant regulator immediately if the firm becomes aware it is in breach of, or expects to be in breach of, the relevant financial resources rule."},
+
+{tag:"cisi",topic:"4.1 IPRU-INV",
+q:"If an investment firm's activities change, what implication does this have for IPRU-INV?",
+opts:["The firm automatically moves to MIFIDPRU","IPRU-INV applies based on the activity conducted — if the activity changes, the applicable IPRU-INV requirements may change","No implication — IPRU-INV requirements are fixed regardless of activity","The firm must apply for a new Part 4A permission"],
+ans:1,exp:"IPRU-INV applies based on the activity which is conducted by the firm. Consequently, if an investment firm's activity changes, this may mean the firm must comply with different aspects of IPRU-INV."},
+
+{tag:"cisi",topic:"4.1 IFPR/MIFIDPRU",
+q:"What is the aim of the Investment Firms Prudential Regime (IFPR)?",
+opts:["To extend CRD requirements to all investment firms regardless of size","To simplify requirements for FCA solo-regulated MiFID investment firms by refocusing prudential requirements toward the potential harm the firm can pose to consumers and markets","To replace all existing prudential sourcebooks with a single universal framework","To align UK prudential requirements exactly with EU standards post-Brexit"],
+ans:1,exp:"The aim of IFPR is to simplify requirements for FCA solo-regulated MiFID investment firms by refocusing prudential requirements and expectations away from the risks that firms face, toward the potential harm the firm can pose to consumers and markets."},
+
+{tag:"cisi",topic:"4.1 IFPR/MIFIDPRU",
+q:"When did the UK IFPR (MIFIDPRU) regime come into effect?",
+opts:["1 January 2021","1 January 2022","31 December 2022","1 July 2023"],
+ans:1,exp:"The UK IFPR came into effect in 2022, as contained in the FCA's MIFIDPRU Sourcebook. It follows the EU's Investment Firms Directive and Regulations (effective 2021) but with UK adjustments."},
+
+{tag:"cisi",topic:"4.1 IFPR/MIFIDPRU",
+q:"The IFPR approach under MIFIDPRU considers which of the following?",
+opts:["The credit risk of the firm's loan book","The harm a MiFID investment firm can cause to others based on its activities, and that capital and liquid assets held are sufficient to undertake an orderly wind down","The firm's market risk exposure compared to its Tier 1 capital","The leverage ratio of the firm relative to its peers"],
+ans:1,exp:"The IFPR/MIFIDPRU approach considers the harm a MiFID investment firm can cause to others based on its activities, and that the capital and liquid assets held are sufficient to undertake an orderly wind down."},
+
+{tag:"cisi",topic:"4.1 IFPR/MIFIDPRU",
+q:"Which of the following is identified as an outcome of the IFPR?",
+opts:["Investment firms subject to more complex capital calculations to better manage risk","FCA investment firms spend less time on complex capital requirement calculations that do little to help manage risk — allowing management more time to focus on running the business","All prudential rules split across multiple sourcebooks for greater granularity","Prudential requirements aligned to those of PRA-regulated banks"],
+ans:1,exp:"One of the IFPR outcomes is that FCA investment firms spend less time on complex capital requirement calculations that do little to help manage risk — allowing management more time to focus on running the business while managing and mitigating harm and risk."},
+
+{tag:"concept",topic:"4.1 Sourcebooks",
+q:"What is the key difference between GENPRU and MIFIDPRU?",
+opts:["GENPRU applies to solo-regulated firms; MIFIDPRU applies to dual-regulated firms","GENPRU provides high-level standards for firms subject to UK CRD (banks); MIFIDPRU provides prudential requirements specifically for UK-regulated MiFID investment firms that are not banks","GENPRU covers conduct requirements; MIFIDPRU covers prudential requirements","There is no practical difference — both apply to all investment firms"],
+ans:1,exp:"GENPRU: high-level standards for firms subject to UK CRD (mainly banks/credit institutions). MIFIDPRU: prudential requirements specifically for UK-regulated MiFID investment firms that are not banks or credit institutions. They serve different categories of firm."},
+
+{tag:"scenario",topic:"4.1 Three Pillars",
+q:"A regulator is reviewing whether a bank needs to hold additional capital above the Pillar 1 minimum to cover specific risks identified in the bank's business model that are not fully addressed by standard minimum requirements. This process relates to which pillar?",
+opts:["Pillar 1 — minimum capital requirements","Pillar 2 — supervisory review and additional capital decisions","Pillar 3 — market discipline and disclosure","A separate process outside the pillar framework"],
+ans:1,exp:"Pillar 2 — firms and supervisors decide whether additional capital should be held to cover risks not covered in Pillar 1. This is the supervisory review process, allowing case-by-case assessment beyond the standard minimums."},
+
+{tag:"scenario",topic:"4.1 Capital Tiers",
+q:"A firm subject to UK CRD is assessing how to meet its capital resource requirements. It is considering using short-term subordinated debt instruments. Under the capital tier framework, which tier would these fall into and what does this imply?",
+opts:["Core Tier 1 — highest quality; first to absorb losses","Tier 2 — includes long-term subordinated debt with moderate loss absorbency","Tier 3 — lowest quality capital with limited recognition","These instruments are not eligible for capital purposes under UK CRD"],
+ans:2,exp:"Short-term subordinated debt falls into Tier 3 capital — the lowest quality tier with the most limited recognition. This means it has restricted ability to count towards capital resource requirements compared to Core Tier 1 or Tier 2 instruments."},
+
+{tag:"scenario",topic:"4.1 IPRU-INV",
+q:"A financial advisory firm operates under a MiFID exemption. It is not subject to CRD/CRR and not subject to MIFIDPRU. Which sourcebook governs its capital adequacy requirements?",
+opts:["GENPRU","MIFIDPRU","IPRU-INV","No capital adequacy requirements apply"],
+ans:2,exp:"Personal investment firms operating under a MiFID exemption (eg, financial advisory firms) are subject to IPRU-INV. IPRU-INV covers investment firms not subject to CRD/CRR or MIFIDPRU."},
+
+{tag:"detail",topic:"4.1 Sourcebooks",
+q:"On what date did the MIFIDPRU sourcebook come into effect?",
+opts:["1 January 2020","1 July 2021","1 January 2022","31 December 2022"],
+ans:2,exp:"The MIFIDPRU sourcebook (and the UK IFPR regime) came into effect on 1 January 2022. The EU Investment Firms Directive and Regulations came into effect in 2021, with UK adjustments implemented in 2022."},
+
+{tag:"detail",topic:"4.1 IPRU-INV",
+q:"Which of the following is listed as a firm type subject to IPRU-INV?",
+opts:["Banks regulated by the PRA","MiFID investment firms subject to MIFIDPRU","Lloyd's underwriting agents and members' advisers","Insurance companies regulated under Solvency II"],
+ans:2,exp:"Lloyd's underwriting agents and members' advisers are subject to IPRU-INV. Banks (PRA/CRD) and MiFID firms (MIFIDPRU) are different categories. Insurance companies follow Solvency II requirements."},
+
+{tag:"concept",topic:"4.1 CRD/CRR",
+q:"What happened to the UK's CRD/CRR framework following Brexit?",
+opts:["It was completely replaced by new UK-only legislation","The body of text previously developed whilst the UK was in the EU was retained following Brexit","The UK adopted a simplified version with fewer requirements","It was transferred to FCA supervision from PRA supervision"],
+ans:1,exp:"The CRD and CRR framework was retained following Brexit. The body of text previously developed whilst the UK was in the EU was kept in place, maintaining continuity of capital standards for banks and deposit-taking institutions."},
+
+{tag:"detail",topic:"4.1 IFPR/MIFIDPRU",
+q:"Which EU directive did the UK IFPR follow?",
+opts:["The Markets in Financial Instruments Directive (MiFID II)","The EU's Investment Firms Directive and Regulations (effective 2021)","The Capital Requirements Directive IV (CRD IV)","The Alternative Investment Fund Managers Directive (AIFMD)"],
+ans:1,exp:"The UK IFPR follows the EU's Investment Firms Directive and Regulations, which came into effect in 2021. The UK Government undertook slight adjustments when implementing the requirements to ensure it is fit for purpose for the UK market."},
+
+{tag:"concept",topic:"4.1 IFPR/MIFIDPRU",
+q:"What is the key philosophical shift in the IFPR approach compared to traditional capital adequacy frameworks?",
+opts:["Focus on the risks that firms themselves face","Focus on the potential harm the firm can pose to consumers and markets, and that capital/liquid assets are sufficient for orderly wind down","Focus on ensuring firms hold the maximum possible capital","Focus on aligning UK standards with EU requirements"],
+ans:1,exp:"The key shift in IFPR is refocusing prudential requirements away from the risks that firms face, toward the potential harm the firm can pose to consumers and markets, and ensuring sufficient capital and liquid assets for an orderly wind down."},
+
+{tag:"detail",topic:"4.1 Capital Tiers",
+q:"Why must firms subject to UK CRD consider the 'loss absorbency' of capital instruments?",
+opts:["Because regulators require all capital to be held in a single currency","Because different capital instruments have different abilities to absorb losses — determining how useful they are in meeting capital resource requirements","Because loss absorbency determines the tax treatment of capital instruments","Because the PRA sets different interest rates based on capital quality"],
+ans:1,exp:"Firms must consider loss absorbency because different capital instruments absorb losses in different ways and to different degrees. Core Tier 1 is highest quality (first to absorb losses); Tier 3 has the most limited recognition. This determines how much each can count towards meeting capital resource requirements."},
+
+{tag:"scenario",topic:"4.1 Reporting",
+q:"A firm regulated under UK CRD discovers on Tuesday morning that its capital resources have dropped below the regulatory minimum due to unexpected trading losses. What is the firm's immediate obligation?",
+opts:["File a report at the next quarterly reporting date","Notify the PRA immediately","Convene an emergency board meeting within 24 hours and then inform the PRA","Submit a formal recovery plan to the FCA within 10 business days"],
+ans:1,exp:"If at any time a firm knows its capital resources have fallen below the prescribed minimum, it must notify its regulator (PRA) immediately. This is not deferred — immediate notification is required regardless of the normal reporting schedule."},
+
+{tag:"cisi",topic:"4.1 IFPR/MIFIDPRU",
+q:"Which of the following is identified as an outcome of IFPR specifically related to rule complexity?",
+opts:["More detailed rules spread across five separate sourcebooks","Prudential rules that are understandable and accessible, with most rules brought into a single prudential sourcebook (MIFIDPRU)","Rules aligned to PRA sourcebooks to reduce duplication","A complete removal of capital requirements for small investment firms"],
+ans:1,exp:"One IFPR outcome is that prudential rules are understandable and accessible, with most rules brought into a new single prudential sourcebook (MIFIDPRU). This consolidation reduces complexity compared to the previous fragmented approach."},
+];
+
+const SK='cisi_ch4_v1';
+const N=10;
+let APP={round:[],answers:{},opts:{},seen:[],roundNum:0};
+
+function save(){try{localStorage.setItem(SK,JSON.stringify(APP));}catch(e){}}
+function load(){try{const d=localStorage.getItem(SK);if(d){const p=JSON.parse(d);if(p&&Array.isArray(p.round)&&p.round.length===N&&typeof p.roundNum==='number'&&Array.isArray(p.seen)){APP=p;}}}catch(e){}}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function buildRound(){
+  const lw=Object.entries(APP.answers).filter(([,v])=>v&&v.v===0).map(([k])=>APP.round[parseInt(k)]).filter(x=>x!==undefined);
+  const unseen=BANK.map((_,i)=>i).filter(i=>!APP.seen.includes(i));
+  const old=APP.seen.filter(i=>!APP.round.includes(i));
+  let c=[];
+  c.push(...shuffle(lw).slice(0,3));
+  c.push(...shuffle(unseen.filter(i=>!c.includes(i))).slice(0,N-c.length));
+  if(c.length<N) c.push(...shuffle(old.filter(i=>!c.includes(i))).slice(0,N-c.length));
+  if(c.length<N) c.push(...shuffle(BANK.map((_,i)=>i).filter(i=>!c.includes(i))).slice(0,N-c.length));
+  const round=shuffle(c).slice(0,N);
+  round.forEach(i=>{if(!APP.seen.includes(i))APP.seen.push(i);});
+  APP.round=round;APP.answers={};APP.opts={};APP.roundNum=(APP.roundNum||0)+1;
+}
+
+function doReset(){buildRound();save();render();window.scrollTo({top:0,behavior:'smooth'});}
+
+function pick(pos,oi){
+  if(APP.answers[pos]) return;
+  const q=BANK[APP.round[pos]];
+  APP.answers[pos]={opt:q.opts[oi],v:oi===q.ans?1:0};
+  save();render();
+  setTimeout(()=>{
+    const done=Object.keys(APP.answers).length;
+    if(done<N){const cards=document.querySelectorAll('#q-area .q-card');const next=[...Array(N).keys()].find(j=>j>pos&&!APP.answers[j]);if(next!==undefined)cards[next]?.scrollIntoView({behavior:'smooth',block:'center'});}
+    else{document.querySelector('#q-area .result-card')?.scrollIntoView({behavior:'smooth',block:'start'});}
+  },350);
+}
+
+function render(){
+  const done=Object.keys(APP.answers).length;
+  const ok=Object.values(APP.answers).filter(v=>v&&v.v===1).length;
+  const bad=done-ok;const pct=done?Math.round(ok/done*100):null;
+  document.getElementById('round-label').textContent=`Round ${APP.roundNum} \u00b7 10 questions from bank of ${BANK.length} \u00b7 Seen: ${APP.seen.length}/${BANK.length}`;
+  document.getElementById('s-num').textContent=`${done}/${N}`;
+  document.getElementById('s-ok').textContent=ok;
+  document.getElementById('s-bad').textContent=bad;
+  document.getElementById('s-pct').textContent=pct===null?'\u2014':pct+'%';
+  const tr=document.getElementById('tracker');tr.innerHTML='';
+  for(let i=0;i<N;i++){const d=document.createElement('div');d.className='tracker-dot'+(APP.answers[i]?APP.answers[i].v===1?' t-ok':' t-bad':i===done?' t-cur':'');tr.appendChild(d);}
+  const area=document.getElementById('q-area');area.innerHTML='';
+  const L=['A','B','C','D'];
+  const tmap={cisi:'CISI exam',concept:'Concept',scenario:'Scenario',detail:'Detail'};
+  const tcls={cisi:'tag-cisi',concept:'tag-concept',scenario:'tag-scenario',detail:'tag-detail'};
+  APP.round.forEach((qi,pos)=>{
+    const q=BANK[qi];const answered=!!APP.answers[pos];const chosen=APP.answers[pos]?.opt;
+    if(!APP.opts[pos]) APP.opts[pos]=shuffle(q.opts.map((_,i)=>i));
+    const oo=APP.opts[pos];
+    let optsHtml=oo.map((oi,li)=>{let c='opt';if(answered)c+=' dis';if(answered&&oi===q.ans)c+=' ok';else if(answered&&q.opts[oi]===chosen&&oi!==q.ans)c+=' bad';return `<div class="${c}" onclick="pick(${pos},${oi})"><span class="opt-l">${L[li]}</span><span>${q.opts[oi]}</span></div>`;}).join('');
+    let expHtml=answered?`<div class="exp-box show ${APP.answers[pos].v===1?'exp-ok':'exp-bad'}"><strong>${APP.answers[pos].v===1?'Correct!':'Incorrect.'}</strong> ${q.exp}</div>`:'';
+    const card=document.createElement('div');card.className='q-card';
+    card.innerHTML=`<div class="q-meta"><span class="q-num">Q${pos+1}</span><span class="q-tag ${tcls[q.tag]}">${tmap[q.tag]}</span><span class="q-topic">${q.topic}</span></div><div class="q-text">${q.q}</div><div class="opts">${optsHtml}</div>${expHtml}`;
+    area.appendChild(card);
+  });
+  if(done===N){
+    const pF=Math.round(ok/N*100);let lbl,col,grade;
+    if(pF>=80){lbl='Pass standard met!';col='var(--teal-m)';grade='Pass \u2713';}
+    else if(pF>=70){lbl='Close to pass standard.';col='var(--amber)';grade='Near Pass';}
+    else if(pF>=60){lbl='Borderline \u2014 further study recommended.';col='var(--coral-m)';grade='Borderline';}
+    else{lbl='Below pass standard \u2014 keep practising.';col='#A32D2D';grade='Needs Work';}
+    const ts={};APP.round.forEach((qi,pos)=>{const t=BANK[qi].topic;if(!ts[t])ts[t]={ok:0,tot:0};ts[t].tot++;if(APP.answers[pos]?.v===1)ts[t].ok++;});
+    let topicHtml=Object.entries(ts).map(([t,s])=>{const tp=Math.round(s.ok/s.tot*100);const c=tp>=80?'var(--teal-m)':tp>=60?'var(--amber)':'var(--coral-m)';return `<div class="topic-row"><div class="topic-name">${t}</div><div style="font-size:.72rem;color:var(--text3);margin-bottom:.25rem">${s.ok}/${s.tot}</div><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:${tp}%;background:${c}"></div></div></div>`;}).join('');
+    let reviewHtml=APP.round.map((qi,pos)=>{const q=BANK[qi];const v=APP.answers[pos]?.v===1;return `<div class="q-review-item ${v?'r-ok':'r-bad'}"><span class="r-icon">${v?'\u2713':'\u2717'}</span><div><strong>Q${pos+1} \u00b7 ${q.topic}.</strong> ${q.q}<br><span style="font-size:.78rem;opacity:.85">Answer: ${q.opts[q.ans]}</span></div></div>`;}).join('');
+    const rc=document.createElement('div');rc.className='result-card';rc.style.marginTop='1rem';
+    rc.innerHTML=`<div style="font-size:.85rem;color:var(--text2);margin-bottom:.3rem">Round ${APP.roundNum} complete</div><div class="result-big" style="color:${col}">${ok}/${N}</div><div class="result-grade" style="background:${col}22;color:${col}">${grade}</div><div class="result-bar-wrap"><div class="result-bar-fill" style="width:${pF}%;background:${col}"></div></div><div style="font-size:.82rem;color:var(--text2);margin:.3rem 0 .2rem">${pF}% correct \u00b7 ${lbl}</div><div class="result-breakdown"><span class="rp" style="background:var(--green-l);color:var(--green)">\u2713 Correct: ${ok}</span><span class="rp" style="background:var(--coral-l);color:var(--coral)">\u2717 Wrong: ${N-ok}</span><span class="rp" style="background:var(--navy-l);color:var(--navy-d)">Seen: ${APP.seen.length}/${BANK.length}</span></div><div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.55rem;text-align:left">Performance by topic:</div><div class="topic-grid">${topicHtml}</div><div class="btn-row" style="margin-bottom:1.4rem"><button class="btn btn-p" onclick="doReset()">\u21ba New round (smart shuffle)</button></div><div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.5rem;text-align:left">Question review:</div><div class="q-review-list">${reviewHtml}</div>`;
+    area.appendChild(rc);
+  }
+}
+load();
+if(!APP.round||APP.round.length!==N){buildRound();}
+if(!APP.opts)APP.opts={};
+if(APP.round.some(i=>i<0||i>=BANK.length)){buildRound();}
+render();
+</script>
+</body>
+</html>
