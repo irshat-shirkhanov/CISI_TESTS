@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CISI Chapter 5 — Practice Test</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1E2761;--navy-l:#CADCFC;--navy-d:#12195F;
+  --teal:#028090;--teal-l:#D6F0F3;--teal-d:#015E6A;--teal-m:#1D9E75;
+  --amber:#B07D12;--amber-l:#FEF3C7;--amber-d:#7C5A0A;
+  --coral:#993C1D;--coral-l:#FAECE7;--coral-m:#D85A30;
+  --purple:#534AB7;--purple-l:#EEEDFE;--purple-d:#3C3489;
+  --green-l:#E1F5EE;--green:#085041;
+  --gray:#64748B;--gray-l:#F1F5F9;--gray-m:#CBD5E1;--gray-d:#334155;
+  --bg:#F0F4F8;--card:#fff;--text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --radius:12px;--shadow:0 2px 10px rgba(0,0,0,.09);
+}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app-header{background:linear-gradient(135deg,var(--navy),var(--teal));padding:1.2rem 1.5rem .85rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.app-title{color:#fff;font-size:1.08rem;font-weight:700;line-height:1.3}
+.app-sub{color:var(--navy-l);font-size:.72rem;margin-top:.18rem}
+.reset-btn{background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.38);color:#fff;border-radius:7px;padding:.36rem .95rem;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.reset-btn:hover{background:rgba(255,255,255,.3)}
+.screen{padding:1.4rem;max-width:820px;margin:0 auto}
+.round-pill{display:inline-flex;align-items:center;gap:.4rem;background:var(--navy);color:var(--navy-l);border-radius:7px;padding:.3rem .85rem;font-size:.73rem;font-weight:600;margin-bottom:1rem}
+.tracker{display:flex;gap:3px;margin-bottom:1.05rem}
+.tracker-dot{flex:1;height:10px;border-radius:5px;background:var(--gray-m);transition:background .3s}
+.tracker-dot.t-ok{background:var(--teal-m)}.tracker-dot.t-bad{background:var(--coral-m)}.tracker-dot.t-cur{background:var(--navy-l)}
+.score-bar{display:flex;gap:.65rem;margin-bottom:1rem}
+.sc{flex:1;background:var(--card);border-radius:10px;padding:.58rem .75rem;text-align:center;border:1px solid var(--gray-m);box-shadow:var(--shadow)}
+.sc .n{font-size:1.38rem;font-weight:700;color:var(--teal);line-height:1}
+.sc .n-ok{color:var(--teal-m)}.sc .n-bad{color:var(--coral-m)}
+.sc .l{font-size:.67rem;color:var(--text3);margin-top:.18rem}
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.4rem 1.5rem;margin-bottom:1rem;border:1px solid rgba(0,0,0,.05)}
+.q-meta{display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem;flex-wrap:wrap}
+.q-num{font-size:.68rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.07em}
+.q-tag{font-size:.64rem;font-weight:700;padding:.15rem .48rem;border-radius:20px}
+.tag-cisi{background:#FEF3C7;color:#7C5A0A}.tag-concept{background:var(--purple-l);color:var(--purple-d)}
+.tag-scenario{background:var(--teal-l);color:var(--teal-d)}.tag-detail{background:var(--gray-l);color:var(--gray-d)}
+.q-topic{font-size:.64rem;color:var(--text3);margin-left:auto}
+.q-text{font-size:.93rem;font-weight:500;line-height:1.6;margin-bottom:.95rem;color:var(--text)}
+.opts{display:flex;flex-direction:column;gap:.42rem}
+.opt{display:flex;align-items:flex-start;gap:.65rem;padding:.68rem .95rem;border-radius:8px;border:1.5px solid var(--gray-m);cursor:pointer;font-size:.86rem;line-height:1.46;background:var(--card);transition:all .16s}
+.opt:hover:not(.dis){border-color:var(--teal);background:var(--teal-l)}
+.opt.ok{border-color:var(--teal-m);background:var(--green-l);color:var(--green)}
+.opt.bad{border-color:var(--coral-m);background:var(--coral-l);color:var(--coral)}
+.opt.dis{cursor:default}
+.opt-l{width:21px;height:21px;min-width:21px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:.69rem;font-weight:700;color:var(--gray);margin-top:1px;flex-shrink:0}
+.opt.ok .opt-l{background:var(--teal-m);color:#fff}.opt.bad .opt-l{background:var(--coral-m);color:#fff}
+.exp-box{margin-top:.8rem;padding:.7rem 1rem;border-radius:8px;font-size:.81rem;line-height:1.62;display:none}
+.exp-box.show{display:block}
+.exp-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.exp-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.result-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem 1.5rem;text-align:center;margin-top:.5rem}
+.result-big{font-size:3.2rem;font-weight:800;margin:.4rem 0}
+.result-grade{display:inline-block;padding:.38rem 1.2rem;border-radius:20px;font-size:.92rem;font-weight:700;margin:.5rem 0 .8rem}
+.result-bar-wrap{background:var(--gray-l);border-radius:20px;height:14px;overflow:hidden;margin:.75rem auto;max-width:320px}
+.result-bar-fill{height:100%;border-radius:20px;transition:width .8s ease}
+.result-breakdown{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 1.2rem}
+.rp{padding:.3rem .9rem;border-radius:20px;font-size:.8rem;font-weight:600}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin:.5rem 0 1.2rem;text-align:left}
+.topic-row{background:var(--gray-l);border-radius:8px;padding:.5rem .75rem;font-size:.78rem}
+.topic-name{color:var(--text2);font-weight:600;margin-bottom:.2rem}
+.topic-bar-wrap{background:var(--gray-m);border-radius:10px;height:6px;overflow:hidden}
+.topic-bar-fill{height:100%;border-radius:10px}
+.q-review-list{text-align:left;margin-top:.5rem}
+.q-review-item{padding:.65rem 1rem;border-radius:8px;margin-bottom:.45rem;font-size:.83rem;line-height:1.52;display:flex;gap:.65rem;align-items:flex-start}
+.q-review-item.r-ok{background:var(--green-l);border-left:3px solid var(--teal-m);color:var(--green)}
+.q-review-item.r-bad{background:var(--coral-l);border-left:3px solid var(--coral-m);color:var(--coral)}
+.r-icon{font-size:.9rem;flex-shrink:0;margin-top:.08rem}
+.btn{padding:.58rem 1.3rem;border:none;border-radius:8px;cursor:pointer;font-size:.86rem;font-weight:600;transition:all .2s}
+.btn-p{background:var(--teal);color:#fff}.btn-p:hover{background:var(--teal-d)}
+.btn-row{display:flex;gap:.65rem;flex-wrap:wrap;justify-content:center}
+</style>
+</head>
+<body>
+<div class="app-header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">CISI — Chapter 5: The UK Regulatory Infrastructure</div>
+      <div class="app-sub">Sections 5.1–5.8 &nbsp;|&nbsp; 10 questions per round &nbsp;|&nbsp; Bank: 59 questions</div>
+    </div>
+    <button class="reset-btn" onclick="doReset()">&#8635; New round</button>
+  </div>
+</div>
+<div class="screen">
+  <div class="round-pill" id="round-label">Round 1 &middot; 10 questions from bank of 60</div>
+  <div class="tracker" id="tracker"></div>
+  <div class="score-bar">
+    <div class="sc"><div class="n" id="s-num">0/10</div><div class="l">Progress</div></div>
+    <div class="sc"><div class="n n-ok" id="s-ok">0</div><div class="l">Correct</div></div>
+    <div class="sc"><div class="n n-bad" id="s-bad">0</div><div class="l">Wrong</div></div>
+    <div class="sc"><div class="n" id="s-pct">&mdash;</div><div class="l">Score</div></div>
+  </div>
+  <div id="q-area"></div>
+</div>
+<script>
+const BANK=[
+// ── 5.1 CMA ──────────────────────────────────────────────────────────────
+{tag:"cisi",topic:"5.1 CMA",
+q:"Is the Competition and Markets Authority (CMA) a financial services body?",
+opts:["Yes — it regulates all financial services firms alongside the FCA","No — although it covers financial services and works closely with the FCA, the CMA is not a financial services body","Yes — it is a subsidiary of the FCA","No — it has no involvement in financial services whatsoever"],
+ans:1,exp:"The CMA promotes competition for the benefit of consumers within and outside the UK, and covers financial services, working closely with the FCA. However, the CMA is not a financial services body."},
+
+{tag:"cisi",topic:"5.1 CMA",
+q:"Which of the following is listed as an activity the CMA undertakes?",
+opts:["Approving prospectuses for listed companies","Bringing criminal proceedings against individuals who commit the cartel offence","Setting interest rates for retail banks","Approving mergers between financial services firms"],
+ans:1,exp:"The CMA brings criminal proceedings against individuals who commit the cartel offence. Other activities include investigating mergers, market studies, enforcing consumer protection legislation, and providing advice on competition and consumer law."},
+
+{tag:"cisi",topic:"5.1 CMA",
+q:"What are the three outcomes the CMA seeks to assure for the UK?",
+opts:["Low inflation, high employment and a trade surplus","People can be confident they get great choices and fair deals; competitive businesses can innovate and thrive; the UK economy can grow productively and sustainably","All firms comply with FCA rules; consumers receive full compensation; market manipulation is eliminated","Reduced regulatory burden; increased foreign investment; lower consumer prices"],
+ans:1,exp:"The CMA's three desired outcomes: (1) people can be confident they are getting great choices and fair deals; (2) competitive, fair-dealing businesses can innovate and thrive; (3) the UK economy can grow productively and sustainably."},
+
+{tag:"cisi",topic:"5.1 CMA",
+q:"The CMA investigates breaches of UK prohibitions against which of the following?",
+opts:["Money laundering and terrorist financing","Anti-competitive agreements and abuses of dominant positions","Market manipulation and insider trading","Breaches of FCA conduct rules"],
+ans:1,exp:"The CMA investigates where there may be breaches of UK prohibitions against anti-competitive agreements and abuses of dominant positions. It also investigates mergers, enforces consumer protection legislation, and brings criminal proceedings for cartel offences."},
+
+// ── 5.2 HMRC ─────────────────────────────────────────────────────────────
+{tag:"cisi",topic:"5.2 HMRC",
+q:"The FCA, PRA and HMRC have agreed to share information and expertise. What is the aim of this agreement?",
+opts:["To share details of all customer transactions above £10,000","To enhance their understanding of banks and their behavioural responses to regulatory, tax and other changes, and to address significant issues more quickly on a more coordinated basis","To merge the functions of FCA and HMRC into a single body","To allow HMRC to supervise banks directly"],
+ans:1,exp:"The FCA/PRA/HMRC information-sharing agreement aims to enhance understanding of banks and their behavioural responses to regulatory, tax and other changes, and to enable them to identify significant issues and address them more quickly on a more coordinated basis."},
+
+{tag:"cisi",topic:"5.2 HMRC",
+q:"In addition to being the primary revenue-raising agency in the UK, HMRC has agreed to cooperate with which regulatory bodies?",
+opts:["The FCA and PRA only","The FCA, PRA and the Bank of England","The FCA, PRA and HMRC have agreed to share information and expertise with each other","The FCA and HM Treasury only"],
+ans:2,exp:"The FCA, the PRA and HM Revenue & Customs (HMRC) have agreed that they will share information and expertise with each other."},
+
+// ── 5.3 FPC ──────────────────────────────────────────────────────────────
+{tag:"cisi",topic:"5.3 FPC",
+q:"When was the Financial Policy Committee (FPC) created and where is it based?",
+opts:["Created in 2009 at the FCA","Created from April 2013 as an independent committee at the Bank of England","Created in 2016 as part of HM Treasury","Created in 2012 alongside the PRA at the Bank of England"],
+ans:1,exp:"From April 2013, the BoE took on further responsibilities that saw the creation of an independent Financial Policy Committee (FPC) at the BoE."},
+
+{tag:"cisi",topic:"5.3 FPC",
+q:"What is the FPC charged with?",
+opts:["Setting interest rates and the inflation target","Identifying, monitoring and taking action to remove or reduce systemic risks with a view to protecting and enhancing the resilience of the UK financial system","Regulating the conduct of all FCA-authorised firms","Approving all mergers in the financial services sector"],
+ans:1,exp:"The FPC is charged with identifying, monitoring and taking action to remove or reduce systemic risks with a view to protecting and enhancing the resilience of the UK financial system."},
+
+{tag:"cisi",topic:"5.3 FPC",
+q:"What is the Financial Stability Report (FSR) and how often is it published?",
+opts:["An annual report on the FCA's supervisory activities","A biannual report covering the FPC's assessment of the outlook for the stability and resilience of the financial sector, and policy actions it advises to reduce and mitigate risks","A quarterly report on bank capital levels published by the PRA","A monthly report on interest rate decisions published by the Monetary Policy Committee"],
+ans:1,exp:"The FPC is responsible for the BoE's biannual Financial Stability Report (FSR), which covers the Committee's assessment of the outlook for the stability and resilience of the financial sector, and the policy actions it advises to reduce and mitigate risks to economic stability."},
+
+{tag:"cisi",topic:"5.3 FPC",
+q:"Since which year has the Bank of England had a statutory objective to contribute to protecting and enhancing the stability of the UK financial system?",
+opts:["2007","2009","2012","2013"],
+ans:1,exp:"Since 2009, the Bank of England has had a statutory objective to 'contribute to protecting and enhancing the stability of the financial systems of the UK'."},
+
+// ── 5.4 BoE ──────────────────────────────────────────────────────────────
+{tag:"cisi",topic:"5.4 BoE",
+q:"What are the two main areas tackled by the Bank of England?",
+opts:["Prudential regulation and conduct regulation","Monetary stability and financial stability","Interest rate setting and exchange rate management","Macro-prudential policy and micro-prudential supervision"],
+ans:1,exp:"The BoE has two main areas: (1) Monetary stability — maintaining stable prices and confidence in the currency; (2) Financial stability — protecting against threats to the whole financial system."},
+
+{tag:"cisi",topic:"5.4 BoE",
+q:"How does the Bank of England aim to meet the Government's inflation target?",
+opts:["By setting reserve requirements for banks","By adjusting the bank interest base rate, agreed by the Monetary Policy Committee which meets eight times a year","By purchasing government bonds through quantitative easing only","By controlling the money supply directly"],
+ans:1,exp:"The BoE aims to meet the Government's inflation target by adjusting the bank interest base rate. This rate is agreed by the Bank's Monetary Policy Committee, which meets eight times a year (roughly every six weeks)."},
+
+{tag:"cisi",topic:"5.4 BoE",
+q:"In exceptional circumstances, the Bank of England may act as 'lender of last resort'. What does this mean?",
+opts:["The BoE issues the final regulatory guidance before enforcement action","The BoE extends credit to banks and other financial institutions when no other financial institutions will","The BoE provides emergency consumer compensation when the FSCS is exhausted","The BoE underwrites government bonds as a last resort"],
+ans:1,exp:"In exceptional circumstances, the BoE may act as the lender of last resort by extending credit to banks and other financial institutions when no other financial institutions will."},
+
+{tag:"cisi",topic:"5.4 BoE",
+q:"What are the two main criteria for monetary stability?",
+opts:["Low unemployment and high GDP growth","Stable prices and confidence in the currency","A current account surplus and a strong pound","Low government debt and a balanced budget"],
+ans:1,exp:"Stable prices and confidence in the currency are the two main criteria for monetary stability. Stable prices are maintained by ensuring price increases meet the Government's inflation target."},
+
+// ── 5.5 HMT ──────────────────────────────────────────────────────────────
+{tag:"cisi",topic:"5.5 HMT",
+q:"What is HM Treasury's (HMT) relationship with the FCA?",
+opts:["HMT is a subsidiary of the FCA","The FCA reports directly to HMT; the Chancellor of the Exchequer appoints the FCA's CEO and chair","HMT and FCA are completely independent of each other","HMT appoints the FCA's board but has no oversight of its objectives"],
+ans:1,exp:"HMT has overall responsibility for the financial services sector in the UK. The FCA reports directly to HMT. The Chancellor of the Exchequer appoints the FCA's CEO and chair."},
+
+{tag:"cisi",topic:"5.5 HMT",
+q:"What is HM Treasury responsible for?",
+opts:["Setting interest rates and managing monetary policy","Developing and executing the British Government's public finance and economic policy","Supervising all UK banks and insurance companies","Managing the UK's gold reserves and foreign exchange"],
+ans:1,exp:"HM Treasury is the department responsible for developing and executing the British Government's public finance and economic policy. It has overall responsibility for the financial services sector in the UK."},
+
+// ── 5.6 Pensions ─────────────────────────────────────────────────────────
+{tag:"cisi",topic:"5.6 Pensions",
+q:"What is the difference between a Defined Contribution (DC) and a Defined Benefit (DB) pension scheme?",
+opts:["DC guarantees a final salary pension; DB offers a variable pot","DC provides a set contribution with no guarantee of final pot value; DB guarantees scheme members a percentage of their final salary","DC is only available to public sector workers; DB is available to all","DC requires employer contributions only; DB requires employee contributions only"],
+ans:1,exp:"DC (Defined Contribution): a set amount of payment is made — no guarantee of final pot value. DB (Defined Benefit): scheme members are guaranteed to receive a percentage of their final salary (eg, final salary schemes)."},
+
+{tag:"cisi",topic:"5.6 Pensions",
+q:"What was the main aim of the Pensions Act 2008?",
+opts:["To create the National Employment Savings Trust (NEST)","To introduce 'automatic enrolment' requiring employers to automatically enrol eligible employees into a pension scheme and contribute towards it","To increase the State Pension age from 65 to 67","To require all pension schemes to convert to Defined Contribution"],
+ans:1,exp:"The main aim of the Pensions Act 2008 was to introduce 'automatic enrolment' for workplace pensions, requiring employers to automatically enrol eligible employees into a pension scheme and contribute towards it."},
+
+{tag:"cisi",topic:"5.6 Pensions",
+q:"Under the Pensions Act 2008, who are eligible workers for automatic enrolment?",
+opts:["All UK residents over the age of 18","Those over 22 and under State Pension age, earning over a certain threshold","All employees regardless of age or earnings","Full-time employees only, with at least 2 years of service"],
+ans:1,exp:"The Act identifies eligible workers as those over 22 and under State Pension age, earning over a certain threshold."},
+
+{tag:"cisi",topic:"5.6 Pensions",
+q:"What enforcement actions can the Pensions Regulator (TPR) take if an employer does not comply with automatic enrolment obligations?",
+opts:["TPR can only issue advisory letters; no financial penalties apply","TPR can take compliance notices, penalty notices, and fines","TPR can criminally prosecute employers immediately without prior warning","TPR can only refer the matter to the FCA for action"],
+ans:1,exp:"TPR can take enforcement actions such as compliance notices, penalty notices, and fines if an employer does not comply with its legal responsibilities regarding automatic enrolment."},
+
+{tag:"cisi",topic:"5.6 Pensions",
+q:"What does the Pensions Regulator (TPR) do?",
+opts:["Sets the State Pension age and pension tax relief rules","Protects the UK's workplace pension and ensures scheme members' rights are safeguarded through regulation monitoring employers, trustees, pension specialists and business advisers","Manages the National Insurance fund on behalf of the government","Regulates personal pensions sold by insurance companies"],
+ans:1,exp:"The Pensions Regulator (TPR) protects the UK's workplace pension and ensures scheme members' rights are safeguarded through regulation that monitors employers, trustees, pension specialists and business advisers."},
+
+// ── 5.7 Overseas Legislation ──────────────────────────────────────────────
+{tag:"cisi",topic:"5.7 Brexit/EU Law",
+q:"What did the European Union (Withdrawal) Act 2018 do?",
+opts:["Revoked all EU-derived financial services legislation immediately","Gave the government powers to amend current legislation to ensure it functions when the UK is no longer an EU member state, allowing the same rules to apply on the day after exit as the day before","Created a new regulatory body to replace ESMA in the UK","Required all firms to reapply for their regulatory permissions"],
+ans:1,exp:"The EU (Withdrawal) Act 2018 gave the government powers to amend current legislation to ensure that it functions when the UK is no longer an EU member state. This allowed the same rules to apply on the day after the exit as on the day before, as far as possible."},
+
+{tag:"cisi",topic:"5.7 Brexit/EU Law",
+q:"What does 'assimilated law' refer to in the post-Brexit UK context?",
+opts:["UK law that has been harmonised with EU law post-Brexit","EU-retained laws that have been incorporated into UK law — previously called 'retained EU law' — until they are replaced or remodelled by UK legislation","Laws passed by the UK Parliament that are similar in content to EU directives","International treaties that the UK has signed post-Brexit"],
+ans:1,exp:"Until the UK replaces or remodels EU-retained laws, they are now referred to as 'assimilated law'. The 'UK version' of EU laws/regulations continues to apply in the UK until replaced."},
+
+{tag:"cisi",topic:"5.7 Brexit/EU Law",
+q:"From what date did the onshored 'UK MiFIR' apply to all UK-regulated firms?",
+opts:["1 January 2020","1 January 2021","31 January 2020 (Brexit day)","1 January 2022"],
+ans:1,exp:"With respect to MiFID, from 1 January 2021, the onshored 'UK MiFIR' (Markets in Financial Instruments Regulation) applies to all UK regulated firms."},
+
+{tag:"cisi",topic:"5.7 Brexit/EU Law",
+q:"Can UK firms still 'passport' their products and services throughout the EU post-Brexit?",
+opts:["Yes — passporting rights were preserved in the Brexit withdrawal agreement","No — UK firms are no longer able to passport their products or services throughout the EU without appropriate authorisation","Yes — but only for existing clients under grandfathering rules","No — but EU firms can still passport into the UK"],
+ans:1,exp:"UK firms are no longer able to passport their products or services throughout the EU without the appropriate authorisation. Equally, EU firms wishing to provide financial services in the UK must obtain the appropriate UK authorisation."},
+
+{tag:"cisi",topic:"5.7 FSA 2023",
+q:"When did the Financial Services and Markets Bill receive Royal Assent, and what is it now called?",
+opts:["January 2023 — the Financial Services Reform Act 2023","June 2023 — the Financial Services and Markets Act 2023","December 2022 — the UK Financial Services Act 2023","March 2024 — the Financial Services and Markets Act 2024"],
+ans:1,exp:"The Financial Services and Markets Bill received Royal Assent in June 2023, and is now referred to as the Financial Services and Markets Act 2023. Some provisions came into effect in August 2023; remaining provisions on 1 January 2024."},
+
+{tag:"cisi",topic:"5.7 FSA 2023",
+q:"Which of the following is an effect of the Financial Services and Markets Act 2023?",
+opts:["It permanently fixed all retained EU financial services law in place","It enhances the UK regulatory regime by updating PRA and FCA objectives to ensure greater focus on long-term growth and international competitiveness — the new secondary objective","It transferred all regulatory powers from the FCA to HM Treasury","It abolished the PRA and merged it back into the FCA"],
+ans:1,exp:"The FSA 2023 enhances the UK's existing regulatory regime by updating the objectives of the PRA and the FCA to ensure a greater focus on long-term growth and international competitiveness, which is the new secondary objective."},
+
+{tag:"cisi",topic:"5.7 FSA 2023",
+q:"The Wholesale Markets Review (2021) proposed reforms guided by four principles. Which answer correctly lists all four?",
+opts:["Reducing regulation; aligning with EU; cutting costs; simplifying rules","Upholding high regulatory standards; promoting openness and competitiveness; delivering fair and proportionate regulation; supporting economic growth","Protecting consumers; eliminating market abuse; reducing systemic risk; promoting innovation","Replacing MiFID II; reviewing capital adequacy; reforming pensions; updating FSMA"],
+ans:1,exp:"The Wholesale Markets Review reforms were guided by: (1) upholding high regulatory standards; (2) promoting openness and competitiveness; (3) delivering fair and proportionate regulation; (4) supporting economic growth."},
+
+{tag:"cisi",topic:"5.7.1 Why Overseas Law Matters",
+q:"Why does overseas legislation impact UK financial services firms?",
+opts:["Because the FCA requires all UK firms to comply with all global regulations","Because many firms operate globally with similar but different local rules that impact how they undertake operational activities, and some legislation has extraterritorial reach","Because the UK is still required to implement EU law post-Brexit","Because IOSCO mandates that all members adopt identical regulatory frameworks"],
+ans:1,exp:"Overseas legislation impacts UK firms because many operate globally with similar but different local rules. Some legislation has extraterritorial requirements — for example, Dodd-Frank and EMIR require compliance based on who the client is and where they are domiciled, regardless of where the transaction occurs."},
+
+{tag:"cisi",topic:"5.7.1 Why Overseas Law Matters",
+q:"Dodd-Frank and EMIR are examples of legislation with 'extraterritorial requirements'. What does this mean in practice?",
+opts:["These laws only apply within their respective domestic jurisdictions","A branch of a UK bank would have a UK EMIR reporting obligation regardless of where the derivative transaction was executed or the domicile of the other client","These laws expired when the UK left the EU","UK firms are exempt from Dodd-Frank as it is US legislation"],
+ans:1,exp:"Dodd-Frank and EMIR have extraterritorial requirements based on who the client is and where they are domiciled. For instance, a branch of a UK bank would have a UK EMIR reporting obligation regardless of where the derivative transaction was executed."},
+
+// ── 5.7.2 International Bodies ────────────────────────────────────────────
+{tag:"cisi",topic:"5.7.2 FATF",
+q:"What is the Financial Action Task Force (FATF)?",
+opts:["A UN body that regulates international tax treaties","A global anti-money laundering and terrorist financing body which sets international standards to prevent these illegal activities and the harm they cause to society","An EU supervisory body that replaced ESMA post-Brexit","A G7 body that sets global capital adequacy standards"],
+ans:1,exp:"The FATF is a global anti-money laundering and terrorist financing body which sets international standards with the aim to prevent these illegal activities and the harm they cause to society. As a policy-making body, it works to generate the necessary political will for national legislative and regulatory reforms."},
+
+{tag:"cisi",topic:"5.7.2 FATF",
+q:"How many Recommendations has the FATF developed, and how many countries have committed to implementing them?",
+opts:["20 Recommendations; 130+ countries","40 Recommendations; more than 200 countries","50 Recommendations; all G20 countries","30 Recommendations; 63 countries"],
+ans:1,exp:"The FATF has developed 40 Recommendations, which ensure a coordinated global response to prevent organised crime, corruption and terrorism. More than 200 countries have committed to implementing the Recommendations."},
+
+{tag:"cisi",topic:"5.7.2 FATF",
+q:"What new risk area has the FATF been working to address in recent years?",
+opts:["Cybersecurity and data breaches","The regulation of virtual assets, which have spread as cryptocurrencies have gained popularity","Climate change risks in financial services","Algorithmic trading and market manipulation"],
+ans:1,exp:"The FATF reviews money laundering and terrorist financing techniques and continuously strengthens its standards to address new risks, such as the regulation of virtual assets, which have spread as cryptocurrencies gaining popularity."},
+
+{tag:"cisi",topic:"5.7.2 BIS",
+q:"What is the Bank for International Settlements (BIS) and when was it established?",
+opts:["A global investment bank founded in 1944 at Bretton Woods","An international financial institution that serves as a bank for central banks, fostering international monetary and financial cooperation and promoting financial stability — established in 1930","A global insurance regulator established in 1945","The central bank of the European Union, established in 1999"],
+ans:1,exp:"The BIS is an international financial institution that serves as a bank for central banks, fostering international monetary and financial cooperation and promoting financial stability. It was established in 1930."},
+
+{tag:"cisi",topic:"5.7.2 BIS",
+q:"How many central banks are members of the BIS, and who represents the UK?",
+opts:["20 central banks; the FCA represents the UK","63 central banks; the Governor of the Bank of England represents the UK","34 central banks; the Chancellor of the Exchequer represents the UK","130 jurisdictions; the CEO of the FCA represents the UK"],
+ans:1,exp:"Sixty-three central banks and monetary authorities are members of the BIS. The Governor of the Bank of England represents the UK."},
+
+{tag:"cisi",topic:"5.7.2 BIS",
+q:"The BIS Board of Directors has 18 members, including six 'ex-officio' Directors. Which countries do the ex-officio Directors represent?",
+opts:["The USA, China, Japan, Germany, France and the UK","Belgium, France, Germany, Italy, the UK and the USA","The G7 countries plus the Netherlands","The founding members: France, Germany, Italy, Belgium, Switzerland and the UK"],
+ans:1,exp:"The BIS Board of Directors includes six 'ex-officio' Directors, comprising the Central Bank Governors of Belgium, France, Germany, Italy, the UK and the USA."},
+
+{tag:"cisi",topic:"5.7.2 IOSCO",
+q:"What is IOSCO and how many jurisdictions does it cover?",
+opts:["A global anti-money laundering body with 40 member countries","The global body that sets international standards for securities regulation — a cooperative forum for securities regulatory agencies from over 130 jurisdictions","A G20 body for banking supervision with 63 members","An EU-only body for securities regulation with 27 member states"],
+ans:1,exp:"IOSCO is the global body that sets international standards for securities regulation. It is a cooperative forum for securities regulatory agencies from over 130 jurisdictions that aim to protect investors, maintain fair, efficient and transparent markets, and reduce systemic risk."},
+
+{tag:"cisi",topic:"5.7.2 IOSCO",
+q:"How is the UK represented on the IOSCO Board?",
+opts:["The Governor of the Bank of England","The Chancellor of the Exchequer","The CEO of the FCA represents the UK on the IOSCO Board","The Chair of the FCA represents the UK"],
+ans:2,exp:"The IOSCO Board comprises 34 securities regulators. The CEO of the FCA represents the UK on the IOSCO Board."},
+
+// ── 5.8 Oversight Bodies ──────────────────────────────────────────────────
+{tag:"cisi",topic:"5.8.1 Internal Audit",
+q:"What is the primary role of the internal audit function in a regulated firm?",
+opts:["To prepare the firm's financial statements for publication","To play a crucial role in the ongoing maintenance and assessment of a firm's internal control, risk management and governance systems — developing an independent and informed view of risks","To conduct the firm's statutory annual audit on behalf of shareholders","To manage the firm's relationships with the FCA and PRA"],
+ans:1,exp:"The internal audit function plays a crucial role in the ongoing maintenance and assessment of a firm's internal control, risk management, and governance systems and processes. It develops an independent and informed view of risks based on access to all records and data."},
+
+{tag:"cisi",topic:"5.8.1 Internal Audit",
+q:"Who should the internal audit function be able to report its views and conclusions to directly?",
+opts:["The FCA's supervisory team","The audit committee and the board of directors, thereby helping the board to oversee senior management","The external auditors only","HM Treasury and the PRA"],
+ans:1,exp:"The internal audit function should be able to discuss its views, findings, and conclusions directly with the audit committee and the board of directors, thereby helping the board to oversee senior management."},
+
+{tag:"cisi",topic:"5.8.2 External Audit",
+q:"Which of the following is a requirement for a firm's external auditor?",
+opts:["The external auditor must be based in the UK","Be objective and independent in both fact and appearance with respect to the firm","The external auditor must be approved by the FCA","The external auditor must be changed every three years"],
+ans:1,exp:"One key requirement is that the external auditor must be objective and independent in both fact and appearance with respect to the firm. Other requirements include: relevant industry knowledge, professional scepticism, quality control standards compliance, and direct reporting to supervisors."},
+
+{tag:"cisi",topic:"5.8.3 Trustees",
+q:"What are trustees ultimately responsible for, even if they delegate investment management?",
+opts:["They have no responsibility once investment management is delegated","Any decisions made — trustees can delegate management of investments but are ultimately responsible for all decisions","Only decisions made within the last 12 months","Only decisions that involve amounts above a certain threshold"],
+ans:1,exp:"Trustees can delegate the management of their investments to those with relevant professional experience and pass oversight to a finance or investment committee. However, this committee must report to and advise the trustee board — trustees are ultimately responsible for any decisions made."},
+
+{tag:"cisi",topic:"5.8.3 Trustees",
+q:"What types of trustees are mentioned in the context of this chapter?",
+opts:["Corporate, government, retail and institutional trustees","Administrative, investment, pension scheme and charity trustees","Discretionary, advisory, custodian and nominee trustees","Primary, secondary, tertiary and quaternary trustees"],
+ans:1,exp:"There are various types of trustees, including administrative, investment, pension scheme, and charity trustees. Within the context of this chapter, general trustees have overall responsibility for the investment of funds."},
+
+{tag:"cisi",topic:"5.8.4 Compliance",
+q:"Which of the following best describes the correct approach to compliance within a firm?",
+opts:["Compliance is solely the responsibility of the specialist compliance department","Compliance starts at the top and concerns everyone within a firm — it should be viewed as an integral part of business activities and part of the organisation's culture","Compliance only applies to front-office staff dealing with clients","Compliance is required for firms with more than 50 employees"],
+ans:1,exp:"Compliance starts at the top. It concerns everyone within a firm and should be viewed as an integral part of business activities. It is not just the responsibility of specialist compliance staff — all employees should be aware of the importance of compliance."},
+
+{tag:"cisi",topic:"5.8.4 Compliance",
+q:"What are the three key structural requirements for the compliance function within a firm?",
+opts:["It must be led by the CEO, report to the board, and be reviewed by the PRA","It should be independent and sufficiently resourced, its responsibilities should be clearly specified, and its activities should be subject to periodic and independent review by the internal audit function","It must employ at least three full-time staff, have a dedicated budget, and report monthly to the FCA","It must be co-located with risk management, report to the CFO, and be assessed by external auditors"],
+ans:1,exp:"Regardless of how the compliance function is organised, it should be: (1) independent and sufficiently resourced; (2) have clearly specified responsibilities; and (3) be subject to periodic and independent review by the internal audit function."},
+
+{tag:"cisi",topic:"5.8.4 Compliance",
+q:"Following Brexit, which ESMA guidelines does the FCA continue to comply with?",
+opts:["All ESMA guidelines published after Brexit","Level 3 measures (Guidelines, Q&A and opinions) published by EU supervisory bodies when the UK was part of the EU — however, subsequent changes made by ESMA will not apply in the UK","No ESMA guidelines — all have been revoked","Only ESMA guidelines endorsed by HM Treasury"],
+ans:1,exp:"Following Brexit, the FCA acknowledged it will continue to comply with all Level 3 measures (Guidelines, Q&A and opinions published by ESMA, EIOPA and the EBA) when the UK was part of the EU. However, subsequent changes made by ESMA will not apply in the UK."},
+
+{tag:"cisi",topic:"5.8.5 Industry Bodies",
+q:"How do industry bodies differ from trade associations?",
+opts:["Industry bodies are government-funded; trade associations are privately funded","Industry bodies are similar to trade associations but tend not to be product-specific and are more generalist in nature — they champion and support the success of UK financial and professional services","Industry bodies regulate firms; trade associations only lobby on behalf of firms","There is no meaningful difference between them"],
+ans:1,exp:"Industry bodies are similar to trade associations — they have members and work for their members. However, they tend not to be product specific and are more generalist in nature. In financial services, they 'champion' and support the success of UK financial and professional service regulatory architecture."},
+
+{tag:"cisi",topic:"5.8.5 Industry Bodies",
+q:"What is TheCityUK and what does it do?",
+opts:["A UK government department that manages the City of London","An industry body that represents the broad spectrum of sectors across the financial and professional services industry, sustaining London's reputation as a global capital of finance","A trade association for securities lending firms","The FCA's consumer education initiative"],
+ans:1,exp:"TheCityUK is an example of an industry body. It represents the broad spectrum of sectors across the financial and related professional services industry in order to sustain London's reputation as a global capital of finance. Its remit covers the promotion of the UK as a world leading international financial centre."},
+
+{tag:"cisi",topic:"5.8.5 Industry Bodies",
+q:"What is the FX Global Code and how does it relate to industry bodies?",
+opts:["A mandatory FCA rule book for FX trading firms","A set of principles applying to both firms and individuals, providing a common set of guidelines to promote the integrity and effective running of the wholesale foreign exchange market — an example of an industry body code of conduct","An EU regulation for foreign exchange transactions that was retained post-Brexit","A voluntary IOSCO guideline on FX market transparency"],
+ans:1,exp:"The FX Global Code is a set of principles that apply to both firms and individuals with the aim of providing a common set of guidelines to promote the integrity and effective running of the wholesale foreign exchange market. It is an example of an industry body code of conduct."},
+
+{tag:"cisi",topic:"5.8.6 Professional Bodies",
+q:"In banking and finance in the UK, do professional bodies have statutory regulatory powers?",
+opts:["Yes — all professional bodies have statutory powers equivalent to the FCA","No — with the exception of the accountancy and actuarial sectors, no professional body has statutory regulatory powers, and membership is voluntary","Yes — the CISI has statutory powers to revoke individual authorisations","No — but they are required by FCA rules to enforce their codes of conduct"],
+ans:1,exp:"In banking and finance in the UK — with the exception of the accountancy and actuarial sectors — no professional body has statutory regulatory powers, and membership is voluntary. Members are bound by codes of conduct upheld vigorously."},
+
+{tag:"cisi",topic:"5.8.6 Professional Bodies",
+q:"The CISI's code of conduct takes what precedence relative to an employer's internal code of conduct?",
+opts:["The employer's code takes precedence over the CISI code","The CISI code of conduct takes precedence — members must comply with it over and above any code that would apply to individuals set by their employer","Both codes have equal precedence","Neither has precedence — members choose which to follow"],
+ans:1,exp:"The CISI expects members to comply with its 'code of conduct' over and above any code that would apply to individuals set by their employer. This could create an ethical dilemma if the two conflict."},
+
+{tag:"cisi",topic:"5.8.6 Professional Bodies",
+q:"Which of the following correctly describes the membership level for professional bodies in financial services?",
+opts:["Membership is always at the firm level","Membership is normally at the individual level, where individuals are required to attain a level of knowledge and skills as required by their employer and/or due to regulatory requirements","Membership is mandatory for all FCA-authorised persons","Membership is at the institutional level only"],
+ans:1,exp:"Membership of professional bodies is normally at the individual level, where they are required to attain a level of knowledge and skills as required by their employer for their role and/or due to regulatory requirements."},
+
+{tag:"cisi",topic:"5.8.7 Trade Associations",
+q:"What are the two types of trade associations in the financial sector?",
+opts:["Mandatory and voluntary trade associations","Product-specific (eg, ISLA, ICMA, ISDA, FIA) and generalist (eg, AFME, UK Finance, ABI, Association of Foreign Banks)","Public and private trade associations","National and international trade associations"],
+ans:1,exp:"There are two types: (1) Product-specific — eg, ISLA (securities lending), ICMA (bonds and repos), ISDA (OTC derivatives), FIA (exchange-traded derivatives); (2) Generalist — eg, AFME, UK Finance, ABI, the Association of Foreign Banks."},
+
+{tag:"cisi",topic:"5.8.7 Trade Associations",
+q:"Which trade association is associated with securities lending?",
+opts:["ISDA","ICMA","ISLA","FIA"],
+ans:2,exp:"ISLA (International Securities Lending Association) is the trade association for securities lending. ICMA covers bonds and repos; ISDA covers OTC derivatives; FIA covers exchange-traded derivatives."},
+
+{tag:"cisi",topic:"5.8.7 Trade Associations",
+q:"Which trade association is associated with OTC derivatives?",
+opts:["ISLA","ICMA","FIA","ISDA"],
+ans:3,exp:"ISDA (International Swaps and Derivatives Association) is the trade association for OTC derivatives. ISLA covers securities lending; ICMA covers bonds and repos; FIA covers exchange-traded derivatives."},
+
+{tag:"cisi",topic:"5.8.7 Trade Associations",
+q:"What do trade associations do when assessing the impact of new regulations?",
+opts:["They withdraw from consultation processes to maintain independence","They frequently work together, jointly responding to consultations, calling for evidence and responding to discussion papers published","They leave all regulatory responses to individual member firms","They only interact with HM Treasury, not with the FCA or PRA"],
+ans:1,exp:"Trade associations can, and frequently do, work together when assessing the impact of new regulations. They would jointly respond to consultations, call for evidence and respond to discussion papers published."},
+
+{tag:"concept",topic:"5.8.7 Trade Associations",
+q:"A firm provides services in bonds, repos, OTC derivatives and exchange-traded derivatives. How many product-specific trade associations could it theoretically be a member of?",
+opts:["Only one — firms must choose their primary trade association","Up to four — ICMA (bonds/repos), ISDA (OTC derivatives) and FIA (exchange-traded derivatives), and potentially ISLA if it also does securities lending","Exactly two — one product-specific and one generalist","None — firms are not permitted to be members of trade associations"],
+ans:1,exp:"Firms can be members of a number of trade associations based on the products and services they offer. A firm covering bonds/repos (ICMA), OTC derivatives (ISDA) and exchange-traded derivatives (FIA) could be a member of all three — and potentially also ISLA for securities lending."},
+
+{tag:"scenario",topic:"5.7.2 FATF",
+q:"A UK bank has a branch in Singapore. The Singapore branch executes a derivative transaction with a US client. Under UK EMIR rules, does the UK bank have a reporting obligation for this transaction?",
+opts:["No — the transaction occurred in Singapore and involves a US client","Yes — because EMIR has extraterritorial requirements based on who the client is and where they are domiciled; a branch of a UK bank has a UK EMIR reporting obligation regardless of where the transaction was executed","Only if the transaction exceeds £10 million","Only if the Singapore branch is also authorised by the FCA"],
+ans:1,exp:"EMIR has extraterritorial requirements based on who the client is and where they are domiciled. A branch of a UK bank would have a UK EMIR reporting obligation regardless of where the derivative transaction was executed and regardless of the domicile of the other client."},
+
+{tag:"scenario",topic:"5.8.4 Compliance",
+q:"A compliance officer at a firm discovers that a business unit has been following a practice that is technically legal but clearly against the spirit of the FCA's rules. What does good compliance culture require?",
+opts:["No action is needed — if the practice is technically legal, there is no compliance issue","The firm should at all times strive to observe the spirit as well as the letter of the law or rules; failure to consider the impact on customers and markets may result in reputational damage even if no law has been broken","The matter should be reported to the FCA immediately as a breach","The compliance officer should document the practice and take no further action"],
+ans:1,exp:"A firm should hold itself to high standards and at all times strive to observe the spirit as well as the letter of the law or rules. Failure to consider the impact on shareholders, customers, employees and the markets may result in significant adverse publicity and reputational damage, even if no law has been broken."},
+];
+
+const SK='cisi_ch5_v1';
+const N=10;
+let APP={round:[],answers:{},opts:{},seen:[],roundNum:0};
+
+function save(){try{localStorage.setItem(SK,JSON.stringify(APP));}catch(e){}}
+function load(){try{const d=localStorage.getItem(SK);if(d){const p=JSON.parse(d);if(p&&Array.isArray(p.round)&&p.round.length===N&&typeof p.roundNum==='number'&&Array.isArray(p.seen)){APP=p;}}}catch(e){}}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function buildRound(){
+  const lw=Object.entries(APP.answers).filter(([,v])=>v&&v.v===0).map(([k])=>APP.round[parseInt(k)]).filter(x=>x!==undefined);
+  const unseen=BANK.map((_,i)=>i).filter(i=>!APP.seen.includes(i));
+  const old=APP.seen.filter(i=>!APP.round.includes(i));
+  let c=[];
+  c.push(...shuffle(lw).slice(0,3));
+  c.push(...shuffle(unseen.filter(i=>!c.includes(i))).slice(0,N-c.length));
+  if(c.length<N) c.push(...shuffle(old.filter(i=>!c.includes(i))).slice(0,N-c.length));
+  if(c.length<N) c.push(...shuffle(BANK.map((_,i)=>i).filter(i=>!c.includes(i))).slice(0,N-c.length));
+  const round=shuffle(c).slice(0,N);
+  round.forEach(i=>{if(!APP.seen.includes(i))APP.seen.push(i);});
+  APP.round=round;APP.answers={};APP.opts={};APP.roundNum=(APP.roundNum||0)+1;
+}
+function doReset(){buildRound();save();render();window.scrollTo({top:0,behavior:'smooth'});}
+function pick(pos,oi){
+  if(APP.answers[pos]) return;
+  const q=BANK[APP.round[pos]];
+  APP.answers[pos]={opt:q.opts[oi],v:oi===q.ans?1:0};
+  save();render();
+  setTimeout(()=>{
+    const done=Object.keys(APP.answers).length;
+    if(done<N){const cards=document.querySelectorAll('#q-area .q-card');const next=[...Array(N).keys()].find(j=>j>pos&&!APP.answers[j]);if(next!==undefined)cards[next]?.scrollIntoView({behavior:'smooth',block:'center'});}
+    else{document.querySelector('#q-area .result-card')?.scrollIntoView({behavior:'smooth',block:'start'});}
+  },350);
+}
+function render(){
+  const done=Object.keys(APP.answers).length;
+  const ok=Object.values(APP.answers).filter(v=>v&&v.v===1).length;
+  const bad=done-ok;const pct=done?Math.round(ok/done*100):null;
+  document.getElementById('round-label').textContent=`Round ${APP.roundNum} \u00b7 10 questions from bank of ${BANK.length} \u00b7 Seen: ${APP.seen.length}/${BANK.length}`;
+  document.getElementById('s-num').textContent=`${done}/${N}`;
+  document.getElementById('s-ok').textContent=ok;
+  document.getElementById('s-bad').textContent=bad;
+  document.getElementById('s-pct').textContent=pct===null?'\u2014':pct+'%';
+  const tr=document.getElementById('tracker');tr.innerHTML='';
+  for(let i=0;i<N;i++){const d=document.createElement('div');d.className='tracker-dot'+(APP.answers[i]?APP.answers[i].v===1?' t-ok':' t-bad':i===done?' t-cur':'');tr.appendChild(d);}
+  const area=document.getElementById('q-area');area.innerHTML='';
+  const L=['A','B','C','D'];
+  const tmap={cisi:'CISI exam',concept:'Concept',scenario:'Scenario',detail:'Detail'};
+  const tcls={cisi:'tag-cisi',concept:'tag-concept',scenario:'tag-scenario',detail:'tag-detail'};
+  APP.round.forEach((qi,pos)=>{
+    const q=BANK[qi];const answered=!!APP.answers[pos];const chosen=APP.answers[pos]?.opt;
+    if(!APP.opts[pos]) APP.opts[pos]=shuffle(q.opts.map((_,i)=>i));
+    const oo=APP.opts[pos];
+    let optsHtml=oo.map((oi,li)=>{let c='opt';if(answered)c+=' dis';if(answered&&oi===q.ans)c+=' ok';else if(answered&&q.opts[oi]===chosen&&oi!==q.ans)c+=' bad';return `<div class="${c}" onclick="pick(${pos},${oi})"><span class="opt-l">${L[li]}</span><span>${q.opts[oi]}</span></div>`;}).join('');
+    let expHtml=answered?`<div class="exp-box show ${APP.answers[pos].v===1?'exp-ok':'exp-bad'}"><strong>${APP.answers[pos].v===1?'Correct!':'Incorrect.'}</strong> ${q.exp}</div>`:'';
+    const card=document.createElement('div');card.className='q-card';
+    card.innerHTML=`<div class="q-meta"><span class="q-num">Q${pos+1}</span><span class="q-tag ${tcls[q.tag]}">${tmap[q.tag]}</span><span class="q-topic">${q.topic}</span></div><div class="q-text">${q.q}</div><div class="opts">${optsHtml}</div>${expHtml}`;
+    area.appendChild(card);
+  });
+  if(done===N){
+    const pF=Math.round(ok/N*100);let lbl,col,grade;
+    if(pF>=80){lbl='Pass standard met!';col='var(--teal-m)';grade='Pass \u2713';}
+    else if(pF>=70){lbl='Close to pass standard.';col='var(--amber)';grade='Near Pass';}
+    else if(pF>=60){lbl='Borderline \u2014 further study recommended.';col='var(--coral-m)';grade='Borderline';}
+    else{lbl='Below pass standard \u2014 keep practising.';col='#A32D2D';grade='Needs Work';}
+    const ts={};APP.round.forEach((qi,pos)=>{const t=BANK[qi].topic;if(!ts[t])ts[t]={ok:0,tot:0};ts[t].tot++;if(APP.answers[pos]?.v===1)ts[t].ok++;});
+    let topicHtml=Object.entries(ts).map(([t,s])=>{const tp=Math.round(s.ok/s.tot*100);const c=tp>=80?'var(--teal-m)':tp>=60?'var(--amber)':'var(--coral-m)';return `<div class="topic-row"><div class="topic-name">${t}</div><div style="font-size:.72rem;color:var(--text3);margin-bottom:.25rem">${s.ok}/${s.tot}</div><div class="topic-bar-wrap"><div class="topic-bar-fill" style="width:${tp}%;background:${c}"></div></div></div>`;}).join('');
+    let reviewHtml=APP.round.map((qi,pos)=>{const q=BANK[qi];const v=APP.answers[pos]?.v===1;return `<div class="q-review-item ${v?'r-ok':'r-bad'}"><span class="r-icon">${v?'\u2713':'\u2717'}</span><div><strong>Q${pos+1} \u00b7 ${q.topic}.</strong> ${q.q}<br><span style="font-size:.78rem;opacity:.85">Answer: ${q.opts[q.ans]}</span></div></div>`;}).join('');
+    const rc=document.createElement('div');rc.className='result-card';rc.style.marginTop='1rem';
+    rc.innerHTML=`<div style="font-size:.85rem;color:var(--text2);margin-bottom:.3rem">Round ${APP.roundNum} complete</div><div class="result-big" style="color:${col}">${ok}/${N}</div><div class="result-grade" style="background:${col}22;color:${col}">${grade}</div><div class="result-bar-wrap"><div class="result-bar-fill" style="width:${pF}%;background:${col}"></div></div><div style="font-size:.82rem;color:var(--text2);margin:.3rem 0 .2rem">${pF}% correct \u00b7 ${lbl}</div><div class="result-breakdown"><span class="rp" style="background:var(--green-l);color:var(--green)">\u2713 Correct: ${ok}</span><span class="rp" style="background:var(--coral-l);color:var(--coral)">\u2717 Wrong: ${N-ok}</span><span class="rp" style="background:var(--navy-l);color:var(--navy-d)">Seen: ${APP.seen.length}/${BANK.length}</span></div><div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.55rem;text-align:left">Performance by topic:</div><div class="topic-grid">${topicHtml}</div><div class="btn-row" style="margin-bottom:1.4rem"><button class="btn btn-p" onclick="doReset()">\u21ba New round (smart shuffle)</button></div><div style="font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:.5rem;text-align:left">Question review:</div><div class="q-review-list">${reviewHtml}</div>`;
+    area.appendChild(rc);
+  }
+}
+load();
+if(!APP.round||APP.round.length!==N){buildRound();}
+if(!APP.opts)APP.opts={};
+if(APP.round.some(i=>i<0||i>=BANK.length)){buildRound();}
+render();
+</script>
+</body>
+</html>
